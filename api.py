@@ -11,7 +11,11 @@ api = Api(app)
 
 @app.route("/get_my_ip", methods=["GET"])
 def get_my_ip():
-    response = jsonify({'ip': request.environ['HTTP_X_FORWARDED_FOR'], 'environ': request})
+    response = jsonify({
+        'ip': request.environ['HTTP_X_FORWARDED_FOR'],
+        'referrer': request.environ["HTTP_REFERER"],
+        'remote_addr': request.environ['REMOTE_ADDR']
+        })
     response.headers.add('Access-Control-Allow-Origin', '*')
     return response
 
