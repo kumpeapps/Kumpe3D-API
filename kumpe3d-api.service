@@ -7,7 +7,7 @@ User=root
 Group=www-data
 WorkingDirectory=/var/www/html/kumpe3d.com/api/
 Environment="PATH=/var/www/html/kumpe3d.com/api/venv/bin"
-ExecStart=/var/www/html/kumpe3d.com/api/venv/bin/gunicorn --config gunicorn_config.py app:app --error-logfile /var/log/apache2/kumpe3d-api.log
+ExecStart=/var/www/html/kumpe3d.com/api/venv/bin/gunicorn --config gunicorn_config.py api:app --error-logfile /var/log/apache2/kumpe3d-api.log
 
 [Install]
 WantedBy=multi-user.target
