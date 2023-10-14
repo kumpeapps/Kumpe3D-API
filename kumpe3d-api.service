@@ -1,0 +1,13 @@
+[Unit]
+Description=Kumpe3D RESTAPI
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/var/www/html/kumpe3d/api/
+Environment="PATH=/var/www/html/kumpe3d/api/venv/bin"
+ExecStart=/var/www/html/kumpe3d/api/venv/bin/gunicorn --config gunicorn_config.py app:app --error-logfile /var/log/apache2/kumpe3d-api.log
+
+[Install]
+WantedBy=multi-user.target

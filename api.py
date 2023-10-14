@@ -14,4 +14,4 @@ def get_my_ip():
     return jsonify({'ip': request.remote_addr}), 200
 
 if __name__ == '__main__':
-    app.run()  # run our Flask app
+    app.run(port=8081,debug=True)  # run our Flask app
