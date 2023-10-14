@@ -13,7 +13,7 @@ api = Api(app)
 def get_my_ip():
     response = jsonify({'ip': request.remote_addr})
     response.headers.add('Access-Control-Allow-Origin', '*')
-    return response, 200
+    return response
 
 if __name__ == '__main__':
     app.run(port=8081,debug=True)  # run our Flask app
