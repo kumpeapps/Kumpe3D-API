@@ -11,7 +11,9 @@ api = Api(app)
 
 @app.route("/get_my_ip", methods=["GET"])
 def get_my_ip():
-    return jsonify({'ip': request.remote_addr}), 200
+    response = jsonify({'ip': request.remote_addr})
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response, 200
 
 if __name__ == '__main__':
     app.run(port=8081,debug=True)  # run our Flask app
