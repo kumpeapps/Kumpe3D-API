@@ -14,7 +14,7 @@ api = Api(app)
 
 
 # get_my_ip functions
-api.add_resource(header_data, "/headerdata")
+api.add_resource(HeaderData, "/headerdata")
 
 def get_product():
     pass
