@@ -1,6 +1,7 @@
 """REST API for Kumpe3D"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 from flask import Flask
+from flask import jsonify
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
 # from header_data import HeaderData  # pylint: disable=no-name-in-module
