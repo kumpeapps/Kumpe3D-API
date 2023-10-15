@@ -14,4 +14,5 @@ class HeaderData(Resource):
                 "referrer": request.environ["HTTP_REFERER"],
             }
         )
-        return response, 201, {'Access-Control-Allow-Origin': '*'} 
+        response.headers.add("Access-Control-Allow-Origin", "*")
+        return response
