@@ -21,19 +21,18 @@ class Product(Resource):
     )
     logger = logging.getLogger("products")
 
-    sql_params = Params.SQL
-    db = pymysql.connect(
-        db=sql_params.database,
-        user=sql_params.username,
-        passwd=sql_params.password,
-        host=sql_params.server,
-        port=3306,
-    )
-
     def get(self):
         """Get Product Data"""
         self.logger.debug("start get")
-        db = self.db
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
         args = request.args
         self.logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
