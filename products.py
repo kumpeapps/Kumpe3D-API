@@ -7,6 +7,7 @@ from flask_restful import reqparse
 import pymysql
 from params import Params
 import helper_funcs as helpers
+from flask_cors import cross_origin
 
 
 class Product(Resource):
@@ -21,6 +22,7 @@ class Product(Resource):
         port=sql_params.port,
     )
 
+    @cross_origin(origin='*')
     def get(self):
         """Get Product Data"""
         db = self.db
