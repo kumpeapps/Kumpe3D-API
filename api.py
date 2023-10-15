@@ -30,7 +30,7 @@ def headerdata():
             "referrer": request.environ["HTTP_REFERER"],
         }
     )
-    return response, 201, {"Access-Control-Allow-Origin": "*"}
+    return response, 200
 
 
 if __name__ == "__main__":
