@@ -33,7 +33,6 @@ class Product(Resource):
         cursor.execute(sql, (sku['base_sku'],))
         response = jsonify(cursor.fetchone())
         response.headers.add("Access-Control-Allow-Origin", "*")
-        response.status_code = 200
         cursor.close()
         db.close()
         return response
