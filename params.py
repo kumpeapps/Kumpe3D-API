@@ -12,6 +12,7 @@ creds = infisical.InfisicalClient(token=service_token, site_url='https://creds.k
 
 class Params:
     """Parameters"""
+    base_url = creds.get_secret("URL", environment=app_env, path="/WEB/").secret_value
     class SQL:
         """SQL Parameters for Web_3d User"""
         username = creds.get_secret("USERNAME", environment=app_env, path="/MYSQL/").secret_value
