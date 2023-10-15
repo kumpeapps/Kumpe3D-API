@@ -18,7 +18,7 @@ class Product(Resource):
         user=sql_params.username,
         passwd=sql_params.password,
         host=sql_params.server,
-        port=sql_params.port,
+        port=3306,
     )
 
     def get(self):
