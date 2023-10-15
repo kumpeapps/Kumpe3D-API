@@ -34,9 +34,7 @@ class Product(Resource):
         """Get Product Data"""
         self.logger.debug("start get")
         db = self.db
-        parser = reqparse.RequestParser()  # initialize
-        parser.add_argument("sku", required=True)  # add required argument
-        args = parser.parse_args()  # parse arguments to dictionary
+        args = request.args
         self.logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
         self.logger.debug("create cursor")
