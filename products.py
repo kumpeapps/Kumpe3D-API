@@ -32,6 +32,7 @@ class Product(Resource):
         sql = "CALL get_products(%s, %s, %s)"
         cursor.execute(sql, (sku["base_sku"],'%', '%'))
         response = cursor.fetchone()
+        response = json.dumps(response, default=str)
         # response.headers.add("Access-Control-Allow-Origin", "*")
         # response.mimetype = "application/json"
         cursor.close()
