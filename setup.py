@@ -15,7 +15,4 @@ def import_or_install(module, package = None):
 import_or_install("infisical")
 import_or_install("flask")
 import_or_install("pandas")
-import_or_install("pandas")
 import_or_install("requests")
-import_or_install("flask-cors")
-import_or_install("flask-restful")

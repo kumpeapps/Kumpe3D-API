@@ -4,7 +4,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_cors import CORS, cross_origin
 from header_data import HeaderData  # pylint: disable=no-name-in-module
-# from products import Product
+from products import Product
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -15,7 +15,7 @@ api = Api(app)
 # get_my_ip functions
 api.add_resource(HeaderData, "/headerdata")
 
-# api.add_resource(Product, "/product")
+api.add_resource(Product, "/product")
 
 
 if __name__ == "__main__":
