@@ -4,11 +4,13 @@ from flask import Flask
 from flask_restful import Api
 from header_data import HeaderData  # pylint: disable=no-name-in-module
 # from products import Product
+from flask_cors import CORS
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
 app = Flask(__name__)
 api = Api(app)
+cors = CORS(app, resources={r"/headerdata/*": {"origins": "*"}})
 
 
 # get_my_ip functions

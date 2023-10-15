@@ -7,7 +7,6 @@ from flask_restful import reqparse
 import pymysql
 from params import Params
 import helper_funcs as helpers
-from flask_cors import cross_origin
 
 
 class Product(Resource):
@@ -22,7 +21,6 @@ class Product(Resource):
         port=sql_params.port,
     )
 
-    @cross_origin(origin='*')
     def get(self):
         """Get Product Data"""
         db = self.db
@@ -34,7 +32,6 @@ class Product(Resource):
         sql = "CALL get_products('%s', '%', '%')"
         cursor.execute(sql, (sku['base_sku'],))
         response = jsonify(cursor.fetchone())
-        response.headers.add("Access-Control-Allow-Origin", "*")
         cursor.close()
         db.close()
         return response
