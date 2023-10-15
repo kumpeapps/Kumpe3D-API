@@ -31,9 +31,9 @@ class Product(Resource):
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = "CALL get_products(%s, %s, %s)"
         cursor.execute(sql, (sku["base_sku"],'%', '%'))
-        response = jsonify(cursor.fetchone())
+        response = cursor.fetchone()
         response.headers.add("Access-Control-Allow-Origin", "*")
         response.mimetype = "application/json"
         cursor.close()
         db.close()
-        return response
+        return {"test": 0}, 200, {"Access-Control-Allow-Origin": "*"}
