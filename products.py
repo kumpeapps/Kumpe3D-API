@@ -23,7 +23,7 @@ class Product(Resource):
 
     def get(self):
         """Get Product Data"""
-        # db = self.db
+        db = self.db
         # parser = reqparse.RequestParser()  # initialize
         # parser.add_argument("sku", required=True)  # add required argument
         # args = parser.parse_args()  # parse arguments to dictionary
