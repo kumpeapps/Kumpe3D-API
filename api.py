@@ -10,7 +10,7 @@ from flask_cors import CORS
 # import pandas as pd
 app = Flask(__name__)
 api = Api(app)
-cors = CORS(app, resources={r"/headerdata/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/headerdata": {"origins": "*"}})
 
 
 # get_my_ip functions
