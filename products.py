@@ -29,9 +29,9 @@ class Product(Resource):
         args = parser.parse_args()  # parse arguments to dictionary
         sku = helpers.get_sku_array(args["sku"])
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "CALL get_products('%s', '%', '%')"
-        cursor.execute(sql, (sku['base_sku'],))
-        response = cursor.fetchone()
+        sql = "CALL get_products(%s, %s, %s)"
+        cursor.execute(sql, (sku["base_sku"],'%', '%'))
+        response = jsonify(cursor.fetchone())
         response.headers.add("Access-Control-Allow-Origin", "*")
         response.mimetype = "application/json"
         cursor.close()
