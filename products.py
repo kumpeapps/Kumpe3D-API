@@ -35,4 +35,4 @@ class Product(Resource):
         cursor.close()
         db.close()
         response.headers.add("Access-Control-Allow-Origin", "*")
-        return response, {'Access-Control-Allow-Origin': '*'}
+        return response
