@@ -11,7 +11,7 @@ class HeaderData(Resource):
         response = jsonify(
             {
                 "ip": request.environ["HTTP_X_FORWARDED_FOR"],
-                "referrer": request.environ["HTTP_REFERER"],
+                # "referrer": request.environ["HTTP_REFERER"],
             }
         )
         response.headers.add("Access-Control-Allow-Origin", "*")
