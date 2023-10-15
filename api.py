@@ -15,7 +15,7 @@ api = Api(app)
 # get_my_ip functions
 api.add_resource(HeaderData, "/headerdata")
 
-api.add_resource(Product, "/product")
+api.add_resource(Product, "/product", methods=['GET'])
 
 
 if __name__ == "__main__":
