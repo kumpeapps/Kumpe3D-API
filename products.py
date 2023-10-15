@@ -1,7 +1,7 @@
 """Products Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 from flask import request
-from flask import jsonify
+from flask import jsonify, json
 from flask_restful import Resource
 from flask_restful import reqparse
 import pymysql
@@ -31,7 +31,7 @@ class Product(Resource):
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = "CALL get_products(%s, %s, %s)"
         cursor.execute(sql, (sku["base_sku"],'%', '%'))
-        response = jsonify(cursor.fetchone())
+        response = json.dumps(cursor.fetchone())
         # response.headers.add("Access-Control-Allow-Origin", "*")
         # response.mimetype = "application/json"
         cursor.close()
