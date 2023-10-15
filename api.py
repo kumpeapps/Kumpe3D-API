@@ -21,6 +21,7 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 # api.add_resource(Product, "/headerdata")
 @app.route('/headerdata')
+@cross_origin
 def headerdata():
     """Displays User IP and referrer"""
     response = jsonify(
