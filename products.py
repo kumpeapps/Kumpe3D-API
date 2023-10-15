@@ -36,4 +36,4 @@ class Product(Resource):
         # response.mimetype = "application/json"
         cursor.close()
         db.close()
-        return {"test": 0}, 200, {"Access-Control-Allow-Origin": "*"}
+        return response, 200, {"Access-Control-Allow-Origin": "*"}
