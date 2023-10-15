@@ -34,4 +34,4 @@ class Product(Resource):
         response = jsonify(cursor.fetchone())
         cursor.close()
         db.close()
-        return response
+        return response, {'Access-Control-Allow-Origin': '*'} 

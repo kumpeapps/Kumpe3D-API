@@ -3,11 +3,9 @@ import setup  # pylint: disable=unused-import, wrong-import-order
 from flask import request
 from flask import jsonify
 from flask_restful import Resource
-from flask_cors import cross_origin
 
 class HeaderData(Resource):
     """Header Data Functions"""
-    @cross_origin(origin='*')
     def get(self):
         """Displays User IP and referrer"""
         response = jsonify(
