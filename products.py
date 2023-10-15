@@ -1,11 +1,11 @@
 """Products Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
-from flask import request
+# from flask import request
 from flask import jsonify
 from flask_restful import Resource
 from flask_restful import reqparse
-from params import Params
 import pymysql
+from params import Params
 import helper_funcs as helpers
 
 
