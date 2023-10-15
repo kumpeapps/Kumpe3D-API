@@ -32,7 +32,7 @@ class Product(Resource):
         sql = "CALL get_products('%s', '%', '%')"
         cursor.execute(sql, (sku['base_sku'],))
         response = jsonify(cursor.fetchone())
+        response.headers.add("Access-Control-Allow-Origin", "*")
         cursor.close()
         db.close()
-        response.headers.add("Access-Control-Allow-Origin", "*")
         return response
