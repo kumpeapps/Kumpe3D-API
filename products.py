@@ -32,32 +32,32 @@ class Product(Resource):
 
     def get(self):
         """Get Product Data"""
-        try:
-            self.logger.debug("start get")
-            db = self.db
-            args = request.args
-            self.logger.debug("convert sku to array")
-            sku = helpers.get_sku_array(args["sku"])
-            self.logger.debug("create cursor")
-            cursor = db.cursor(pymysql.cursors.DictCursor)
-            sql = "CALL get_products(%s, %s, %s)"
-            cursor.execute(sql, (sku["base_sku"], "%", "%"))
-            self.logger.debug(sql)
-            response = cursor.fetchone()
-            # response.headers.add("Access-Control-Allow-Origin", "*")
-            # response.mimetype = "application/json"
-            cursor.close()
-            db.close()
-            self.logger.debug(response)
+        self.logger.debug("start get")
+        db = self.db
+        args = request.args
+        self.logger.debug("convert sku to array")
+        sku = helpers.get_sku_array(args["sku"])
+        self.logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = "CALL get_products(%s, %s, %s)"
+        cursor.execute(sql, (sku["base_sku"], "%", "%"))
+        self.logger.debug(sql)
+        response = cursor.fetchone()
+        # response.headers.add("Access-Control-Allow-Origin", "*")
+        # response.mimetype = "application/json"
+        cursor.close()
+        db.close()
+        self.logger.debug(response)
+        if response:
             return (
                 {"response": response, "status_code": 200},
                 200,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
-        except:
+        else:
             return (
-                {"status_code": 204},
-                204,
+                {"response": response, "status_code": 200},
+                200,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
         
