@@ -27,6 +27,7 @@ class Product(Resource):
         logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
         response = get_products(sku)
+        response['sku_parts'] = sku
         if response:
             return (
                 {"response": response, "status_code": 200},
