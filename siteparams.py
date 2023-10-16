@@ -59,8 +59,8 @@ class SiteParams(Resource):
             referrer = "none"
         if referrer != base_url:
             return (
-                {"error": "Unauthorized"},
-                401,
+                {"error": "Unauthorized", "referrer": referrer},
+                200,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
         else:
