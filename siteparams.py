@@ -65,12 +65,12 @@ class SiteParams(Resource):
             return (
                 {"error": "Unauthorized"},
                 401,
-                {"Access-Control-Allow-Origin": Params.base_url},
+                {"Access-Control-Allow-Origin": "*"},
             )
         else:
             logger.info("Returned 200 Success")
             return (
                 {"response": response, "status_code": 200},
                 200,
-                {"Access-Control-Allow-Origin": Params.base_url},
+                {"Access-Control-Allow-Origin": "*"},
             )
