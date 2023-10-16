@@ -81,7 +81,7 @@ class ProductPrice(Resource):
             quantity = int(args["quantity"])
         except (KeyError, ValueError):
             quantity = 1
-        response = get_product_pricing(sku, response)
+        response = get_product_pricing(sku, quantity)
         self.logger.debug(response)
         if response:
             return (
