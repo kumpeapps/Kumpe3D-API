@@ -53,7 +53,7 @@ class SiteParams(Resource):
         try:
             referrer = request.environ["HTTP_X_FORWARDED_FOR"]
         except KeyError:
-            referrer = base_url
+            referrer = "none"
         if referrer == base_url:
             return 401
         else:
