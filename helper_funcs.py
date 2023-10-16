@@ -28,3 +28,7 @@ def get_sku_array(sku):
         return {
             "base_sku": "na"
         }
+
+def snake_to_camel(string):
+    """Converts snake_case to camelCase"""
+    return string[0] + ''.join(ele.title() for ele in string[1:])

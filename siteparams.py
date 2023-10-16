@@ -4,6 +4,7 @@ import logging
 import json
 from flask import request, jsonify
 from flask_restful import Resource
+from helper_funcs import snake_to_camel
 
 # from flask_restful import reqparse
 import pymysql
@@ -44,14 +45,15 @@ class SiteParams(Resource):
         db.close()
         response = {}
         for param in params:
+            parameter = snake_to_camel(param["parameter"])
             if param["type"] == "int":
-                response[param["parameter"]] = json.loads(param["value"])
+                response[parameter] = json.loads(param["value"])
             elif param["type"] == "bool":
-                response[param["parameter"]] = bool(param["value"])
+                response[parameter] = bool(param["value"])
             elif param["type"] == "json":
-                response[param["parameter"]] = json.loads(param["value"])
+                response[parameter] = json.loads(param["value"])
             else:
-                response[param["parameter"]] = param["value"]
+                response[parameter] = param["value"]
         logger.debug(response)
         try:
             referrer = request.environ["HTTP_REFERER"]
