@@ -32,7 +32,7 @@ class SiteParams(Resource):
         base_url = Params.base_url
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "call Web_3dprints.get_site_params();"
+        sql = "SELECT parameter, value, type FROM Web_3dprints.site_parameters;"
         cursor.execute(sql)
         logger.debug(sql)
         logger.debug("Get Product Pricing")
@@ -41,12 +41,7 @@ class SiteParams(Resource):
         db.close()
         response = {}
         for param in params:
-            if param['type'] == "int":
-                response[param['parameter']] = json.loads(param['value'])
-            elif param['type'] == "json":
-                response[param['parameter']] = json.loads(param['value'])
-            else:
-                response[param['parameter']] = param['value']
+            response[param['parameter']] = json.loads(param['value'])
         logger.debug(response)
         try:
             referrer = request.environ["HTTP_X_FORWARDED_FOR"]
