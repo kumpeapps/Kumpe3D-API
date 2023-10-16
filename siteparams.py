@@ -1,6 +1,7 @@
 """Site Params Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
+import json
 from flask import request, jsonify
 from flask_restful import Resource
 # from flask_restful import reqparse
@@ -43,7 +44,7 @@ class SiteParams(Resource):
             if param['type'] == "int":
                 response[param['parameter']] = param['value']
             elif param['type'] == "json":
-                response[param['parameter']] = param['value']
+                response[param['parameter']] = json.loads(param['value'])
             else:
                 response[param['parameter']] = param['value']
         logger.debug(response)
