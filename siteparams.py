@@ -57,13 +57,16 @@ class SiteParams(Resource):
             referrer = request.environ["HTTP_REFERER"]
         except KeyError:
             referrer = "none"
+        logger.info("Referrer: %s", referrer)
         if referrer != base_url + "/":
+            logger.error("Returned 401 Unauthorized")
             return (
                 {"error": "Unauthorized"},
                 401,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
         else:
+            logger.info("Returned 200 Success")
             return (
                 {"response": response, "status_code": 200},
                 200,
