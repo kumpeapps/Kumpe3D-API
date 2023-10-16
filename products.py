@@ -1,13 +1,12 @@
 """Products Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
+import logging
 from flask import request
-from flask import jsonify, json
 from flask_restful import Resource
-from flask_restful import reqparse
+# from flask_restful import reqparse
 import pymysql
 from params import Params
 import helper_funcs as helpers
-import logging
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -103,10 +102,10 @@ def get_product_pricing(sku, quantity):
     return response
 
 
-def get_products(sku, category_filter = '%', tag_filter = '%'):
+def get_products(sku, category_filter="%", tag_filter="%"):
     """Get Product Data"""
     logger.debug("start get product data")
-    if sku == '%':
+    if sku == "%":
         single = False
     else:
         single = True
