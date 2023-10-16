@@ -1,7 +1,7 @@
 """Site Params Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request
+from flask import request, jsonify
 from flask_restful import Resource
 # from flask_restful import reqparse
 import pymysql
@@ -35,9 +35,17 @@ class SiteParams(Resource):
         cursor.execute(sql)
         logger.debug(sql)
         logger.debug("Get Product Pricing")
-        response = cursor.fetchall()
+        params = cursor.fetchall()
         cursor.close()
         db.close()
+        response = {}
+        for param in params:
+            if param['type'] == "int":
+                response[param['parameter']] = int(param['value'])
+            elif param['type'] == "json":
+                response[param['parameter']] = jsonify(param['value'])
+            else:
+                response[param['parameter']] = param['value']
         logger.debug(response)
         try:
             referrer = request.environ["HTTP_X_FORWARDED_FOR"]
