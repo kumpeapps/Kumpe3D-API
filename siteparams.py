@@ -32,7 +32,7 @@ class SiteParams(Resource):
         base_url = Params.base_url
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT parameter, value, type FROM Web_3dprints.site_parameters;"
+        sql = "call Web_3dprints.get_site_params();"
         cursor.execute(sql)
         logger.debug(sql)
         logger.debug("Get Product Pricing")
