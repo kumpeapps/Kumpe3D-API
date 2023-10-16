@@ -57,7 +57,7 @@ class SiteParams(Resource):
             referrer = request.environ["HTTP_REFERER"]
         except KeyError:
             referrer = "none"
-        if referrer != base_url:
+        if referrer != base_url + "/":
             return (
                 {"error": "Unauthorized", "referrer": referrer, "base_url": base_url},
                 200,
