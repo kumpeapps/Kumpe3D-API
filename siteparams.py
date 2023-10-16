@@ -42,7 +42,7 @@ class SiteParams(Resource):
         response = {}
         for param in params:
             if param['type'] == "int":
-                response[param['parameter']] = json.loads(param['value'])
+                response[param['parameter']] = bool(param['value'])
             elif param['type'] == "json":
                 response[param['parameter']] = json.loads(param['value'])
             else:
