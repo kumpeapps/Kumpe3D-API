@@ -55,7 +55,7 @@ class SiteParams(Resource):
         except KeyError:
             referrer = "none"
         if referrer != base_url:
-            return 401
+            return {}, 401
         else:
             return (
                 {"response": response, "status_code": 200},
