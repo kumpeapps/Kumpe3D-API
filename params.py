@@ -1,4 +1,4 @@
-"""Parameters file for HAC"""
+"""Parameters file for Kumpe3D API"""
 import setup # pylint: disable=unused-import, wrong-import-order
 import os
 from dotenv import load_dotenv
