@@ -54,7 +54,7 @@ class SiteParams(Resource):
                 response[param["parameter"]] = param["value"]
         logger.debug(response)
         try:
-            referrer = request.environ["HTTP_X_FORWARDED_FOR"]
+            referrer = request.environ["HTTP_REFERER"]
         except KeyError:
             referrer = "none"
         if referrer != base_url:
