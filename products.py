@@ -24,27 +24,10 @@ class Product(Resource):
     def get(self):
         """Get Product Data"""
         logger.debug("start get")
-
-        sql_params = Params.SQL
-        db = pymysql.connect(
-            db=sql_params.database,
-            user=sql_params.username,
-            passwd=sql_params.password,
-            host=sql_params.server,
-            port=3306,
-        )
         args = request.args
         logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
-        logger.debug("create cursor")
-        cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "CALL get_products(%s, %s, %s)"
-        cursor.execute(sql, (sku["base_sku"], "%", "%"))
-        logger.debug(sql)
-        response = cursor.fetchone()
-        cursor.close()
-        db.close()
-        logger.debug(response)
+        response = get_products(sku)
         if response:
             return (
                 {"response": response, "status_code": 200},
@@ -114,6 +97,37 @@ def get_product_pricing(sku, quantity):
     logger.debug(sql)
     logger.debug("Get Product Pricing")
     response = cursor.fetchone()
+    cursor.close()
+    db.close()
+    logger.debug(response)
+    return response
+
+
+def get_products(sku, category_filter = '%', tag_filter = '%'):
+    """Get Product Data"""
+    logger.debug("start get product data")
+    if sku == '%':
+        single = False
+    else:
+        single = True
+
+    sql_params = Params.SQL
+    db = pymysql.connect(
+        db=sql_params.database,
+        user=sql_params.username,
+        passwd=sql_params.password,
+        host=sql_params.server,
+        port=3306,
+    )
+    logger.debug("create cursor")
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    sql = "CALL get_products(%s, %s, %s)"
+    cursor.execute(sql, (sku["base_sku"], category_filter, tag_filter))
+    logger.debug(sql)
+    if single:
+        response = cursor.fetchone()
+    else:
+        response = cursor.fetchall()
     cursor.close()
     db.close()
     logger.debug(response)
