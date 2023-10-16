@@ -43,7 +43,7 @@ class SiteParams(Resource):
             if param['type'] == "int":
                 response[param['parameter']] = param['value']
             elif param['type'] == "json":
-                response[param['parameter']] = jsonify(param['value'])
+                response[param['parameter']] = param['value']
             else:
                 response[param['parameter']] = param['value']
         logger.debug(response)
