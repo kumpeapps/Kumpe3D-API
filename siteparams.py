@@ -41,7 +41,12 @@ class SiteParams(Resource):
         db.close()
         response = {}
         for param in params:
-            response[param['parameter']] = json.loads(param['value'])
+            if param['type'] == "int":
+                response[param['parameter']] = json.loads(param['value'])
+            elif param['type'] == "json":
+                response[param['parameter']] = json.loads(param['value'])
+            else:
+                response[param['parameter']] = param['value']
         logger.debug(response)
         try:
             referrer = request.environ["HTTP_X_FORWARDED_FOR"]
