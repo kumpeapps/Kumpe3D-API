@@ -9,21 +9,21 @@ from params import Params
 import helper_funcs as helpers
 import logging
 
+logging.basicConfig(
+    filename="kumpe3d-api.log",
+    filemode="a",
+    format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
+    level=Params.log_level(),
+)
+logger = logging.getLogger("product")
+
 
 class Product(Resource):
     """Product Functions"""
 
-    logging.basicConfig(
-        filename="kumpe3d-api.log",
-        filemode="a",
-        format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
-        level=Params.log_level(),
-    )
-    logger = logging.getLogger("product")
-
     def get(self):
         """Get Product Data"""
-        self.logger.debug("start get")
+        logger.debug("start get")
 
         sql_params = Params.SQL
         db = pymysql.connect(
@@ -34,19 +34,17 @@ class Product(Resource):
             port=3306,
         )
         args = request.args
-        self.logger.debug("convert sku to array")
+        logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
-        self.logger.debug("create cursor")
+        logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = "CALL get_products(%s, %s, %s)"
         cursor.execute(sql, (sku["base_sku"], "%", "%"))
-        self.logger.debug(sql)
+        logger.debug(sql)
         response = cursor.fetchone()
-        # response.headers.add("Access-Control-Allow-Origin", "*")
-        # response.mimetype = "application/json"
         cursor.close()
         db.close()
-        self.logger.debug(response)
+        logger.debug(response)
         if response:
             return (
                 {"response": response, "status_code": 200},
@@ -75,15 +73,6 @@ class ProductPrice(Resource):
     def get(self):
         """Get Product Pricing"""
         self.logger.debug("start get")
-
-        sql_params = Params.SQL
-        db = pymysql.connect(
-            db=sql_params.database,
-            user=sql_params.username,
-            passwd=sql_params.password,
-            host=sql_params.server,
-            port=3306,
-        )
         args = request.args
         self.logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
@@ -92,15 +81,7 @@ class ProductPrice(Resource):
             quantity = int(args["quantity"])
         except (KeyError, ValueError):
             quantity = 1
-        self.logger.debug("create cursor")
-        cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "CALL Web_3dprints.get_product_price(%s, %s);"
-        cursor.execute(sql, (sku["base_sku"], quantity))
-        self.logger.debug(sql)
-        self.logger.debug("Get Product Pricing")
-        response = cursor.fetchone()
-        cursor.close()
-        db.close()
+        response = get_product_pricing(sku, response)
         self.logger.debug(response)
         if response:
             return (
@@ -114,3 +95,26 @@ class ProductPrice(Resource):
                 204,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
+
+
+def get_product_pricing(sku, quantity):
+    """Get Product Pricing"""
+    sql_params = Params.SQL
+    db = pymysql.connect(
+        db=sql_params.database,
+        user=sql_params.username,
+        passwd=sql_params.password,
+        host=sql_params.server,
+        port=3306,
+    )
+    logger.debug("create cursor")
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    sql = "CALL Web_3dprints.get_product_price(%s, %s);"
+    cursor.execute(sql, (sku["base_sku"], quantity))
+    logger.debug(sql)
+    logger.debug("Get Product Pricing")
+    response = cursor.fetchone()
+    cursor.close()
+    db.close()
+    logger.debug(response)
+    return response
