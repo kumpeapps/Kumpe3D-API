@@ -104,7 +104,7 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     return response
 
 
-def get_products(sku: dict, category_filter: str ="%", tag_filter: str ="%"):
+def get_products(sku: dict, category_filter: str = "%", tag_filter: str = "%"):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
@@ -170,4 +170,8 @@ class ProductImages(Resource):
         cursor.close()
         db.close()
         logger.debug(response)
-        return response
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
