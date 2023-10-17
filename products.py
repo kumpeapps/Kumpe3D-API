@@ -3,6 +3,7 @@ import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
 from flask import request
 from flask_restful import Resource
+
 # from flask_restful import reqparse
 import pymysql
 from params import Params
@@ -27,7 +28,7 @@ class Product(Resource):
         logger.debug("convert sku to array")
         sku = helpers.get_sku_array(args["sku"])
         response = get_products(sku)
-        response['sku_parts'] = sku
+        response["sku_parts"] = sku
         if response:
             return (
                 {"response": response, "status_code": 200},
@@ -80,7 +81,7 @@ class ProductPrice(Resource):
             )
 
 
-def get_product_pricing(sku, quantity):
+def get_product_pricing(sku: dict, quantity: int) -> dict:
     """Get Product Pricing"""
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -103,7 +104,7 @@ def get_product_pricing(sku, quantity):
     return response
 
 
-def get_products(sku, category_filter="%", tag_filter="%"):
+def get_products(sku: dict, category_filter: str ="%", tag_filter: str ="%"):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
@@ -132,3 +133,41 @@ def get_products(sku, category_filter="%", tag_filter="%"):
     db.close()
     logger.debug(response)
     return response
+
+
+class ProductImages(Resource):
+    """Product Images"""
+
+    logging.basicConfig(
+        filename="kumpe3d-api.log",
+        filemode="a",
+        format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
+        level=Params.log_level(),
+    )
+    logger = logging.getLogger("product-images")
+
+    def get(self) -> list:
+        """Get Product Images"""
+        logger.debug("start get product images")
+        args = request.args
+        logger.debug("convert sku to array")
+        sku = helpers.get_sku_array(args["sku"])
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * FROM Web_3dprints.product_photos WHERE sku = %s;"
+        cursor.execute(sql, (sku["base_sku"]))
+        logger.debug(sql)
+        response = cursor.fetchall()
+        cursor.close()
+        db.close()
+        logger.debug(response)
+        return response
