@@ -129,7 +129,7 @@ class Cart(Resource):
                 ON DUPLICATE KEY UPDATE quantity = quantity + %s;"""
         cursor.execute(sql, (session_id, user_id, sku, qty, custom, qty))
         logger.debug(sql)
-        response = cursor.commit()
+        response = db.commit()
         cursor.close()
         db.close()
         logger.debug(response)
