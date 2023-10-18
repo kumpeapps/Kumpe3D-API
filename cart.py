@@ -129,13 +129,12 @@ class Cart(Resource):
                 ON DUPLICATE KEY UPDATE quantity = quantity + %s;"""
         cursor.execute(sql, (session_id, user_id, sku, qty, custom, qty))
         logger.debug(sql)
-        response = db.commit()
+        db.commit()
         cursor.close()
         db.close()
-        logger.debug(response)
         refresh_session(session_id, user_id)
         return (
-            {"response": response, "status_code": 201},
+            {"status_code": 201},
             201,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
