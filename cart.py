@@ -73,12 +73,25 @@ class Cart(Resource):
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
-    # TODO:
     def post(self):
         """Post New Item to Cart"""
         logger.debug("start create cart item")
         args = request.args
         json_args = request.get_json(force=True)
+        try:
+            qty = int(json_args['quantity'])
+        except KeyError:
+            qty = 1
+        custom = json_args.get("customization", "")
+        try:
+            sku = json_args['sku']
+        except KeyError:
+            logger.error("sku missing")
+            return (
+                {"error": "session_id sku parameter is required in json", "status_code": 422},
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
         try:
             session_id = args["session_id"]
         except KeyError:
@@ -106,20 +119,18 @@ class Cart(Resource):
         )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = """SELECT
-                    session_id,
-                    user_id,
-                    sku,
-                    title,
-                    quantity,
-                    customization
-                FROM
-                    Web_3dprints.cart__items
-                WHERE 1=1
-                    AND session_id = %s;"""
-        cursor.execute(sql, (session_id))
+        sql = """INSERT INTO `Web_3dprints`.`cart__items`
+                    (`session_id`,
+                    `user_id`,
+                    `sku`,
+                    `quantity`,
+                    `customization`)
+                VALUES
+                    (%s, %s, %s, %s, %s)
+                ON DUPLICATE KEY UPDATE quantity = quantity + %s;"""
+        cursor.execute(sql, (session_id, user_id, sku, qty, custom, qty))
         logger.debug(sql)
-        response = cursor.fetchall()
+        response = cursor.commit()
         cursor.close()
         db.close()
         logger.debug(response)
