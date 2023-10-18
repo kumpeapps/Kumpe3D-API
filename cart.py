@@ -60,6 +60,11 @@ class Cart(Resource):
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
+    def patch(self):
+        args = request.args
+        session_id = args["session_id"]
+        refresh_session(session_id)
+
 
 def refresh_session(session_id: str):
     """Update session timestamp"""
