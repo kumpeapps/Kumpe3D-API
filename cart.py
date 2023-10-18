@@ -50,13 +50,9 @@ class Cart(Resource):
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = """SELECT
-                    session_id,
-                    user_id,
-                    sku,
-                    quantity,
-                    customization
+                    *
                 FROM
-                    Web_3dprints.cart__items
+                    Web_3dprints.vw_cart__items
                 WHERE 1=1
                     AND session_id = %s;"""
         cursor.execute(sql, (session_id))
