@@ -5,7 +5,6 @@ from flask import request
 from flask_restful import Resource
 import pymysql
 from params import Params
-import helper_funcs as helpers
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -74,16 +73,19 @@ class Cart(Resource):
         args = request.args
         json_args = request.get_json(force=True)
         try:
-            qty = int(json_args['quantity'])
+            qty = int(json_args["quantity"])
         except KeyError:
             qty = 1
         custom = json_args.get("customization", "")
         try:
-            sku = json_args['sku']
+            sku = json_args["sku"]
         except KeyError:
             logger.error("sku missing")
             return (
-                {"error": "session_id sku parameter is required in json", "status_code": 422},
+                {
+                    "error": "session_id sku parameter is required in json",
+                    "status_code": 422,
+                },
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
@@ -135,28 +137,137 @@ class Cart(Resource):
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
-    # TODO:
     def put(self):
-        """Update Item in Cart"""
-        logger.debug("start put")
+        """Update Cart Item"""
+        logger.debug("start update cart item")
+        args = request.args
+        json_args = request.get_json(force=True)
+        try:
+            qty = int(json_args["quantity"])
+        except KeyError:
+            qty = 1
+        try:
+            sku = json_args["sku"]
+        except KeyError:
+            logger.error("sku missing")
+            return (
+                {
+                    "error": "session_id sku parameter is required in json",
+                    "status_code": 422,
+                },
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+        customization = json_args.get("customization", "")
+        try:
+            session_id = args["session_id"]
+        except KeyError:
+            logger.error("session_id missing")
+            return (
+                {"error": "session_id query parameter is required", "status_code": 422},
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+
+        try:
+            user_id = int(args["user_id"])
+        except KeyError:
+            logger.warning("user_id missing")
+            user_id = 0
+        refresh_session(session_id, user_id)
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = """UPDATE `Web_3dprints`.`cart__items`
+                    SET quantity = %s
+                WHERE 1=1
+                    AND `session_id` = %s
+                    AND `sku` = %s
+                    AND `customization` = %s"""
+        cursor.execute(sql, (qty, session_id, sku, customization))
+        logger.debug(sql)
+        db.commit()
+        cursor.close()
+        db.close()
+        refresh_session(session_id, user_id)
         return (
-            {"response": "Not Implemented", "status_code": 501},
-            501,
+            {"status_code": 201},
+            201,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
-    # TODO:
     def delete(self):
-        """Update Item in Cart"""
-        logger.debug("start delete")
+        """Delete Cart Item"""
+        logger.debug("start delete cart item")
+        args = request.args
+        json_args = request.get_json(force=True)
+        try:
+            sku = json_args["sku"]
+        except KeyError:
+            logger.error("sku missing")
+            return (
+                {
+                    "error": "session_id sku parameter is required in json",
+                    "status_code": 422,
+                },
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+        customization = json_args.get("customization", "")
+        try:
+            session_id = args["session_id"]
+        except KeyError:
+            logger.error("session_id missing")
+            return (
+                {"error": "session_id query parameter is required", "status_code": 422},
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+
+        try:
+            user_id = int(args["user_id"])
+        except KeyError:
+            logger.warning("user_id missing")
+            user_id = 0
+        refresh_session(session_id, user_id)
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = """DELETE FROM `Web_3dprints`.`cart__items`
+                WHERE 1=1
+                    AND `session_id` = %s
+                    AND `sku` = %s
+                    AND `customization` = %s"""
+        cursor.execute(sql, (session_id, sku, customization))
+        logger.debug(sql)
+        db.commit()
+        cursor.close()
+        db.close()
+        refresh_session(session_id, user_id)
         return (
-            {"response": "Not Implemented", "status_code": 501},
-            501,
+            {"status_code": 204},
+            204,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
     def patch(self):
-        """Update session timestamp on patch"""
+        """Update user cart to current session"""
         logger.debug("start patch")
         args = request.args
         try:
