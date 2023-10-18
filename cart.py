@@ -199,8 +199,8 @@ class Cart(Resource):
         db.close()
         refresh_session(session_id, user_id)
         return (
-            {"status_code": 201},
-            201,
+            {"status_code": 202},
+            202,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
