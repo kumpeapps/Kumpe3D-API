@@ -76,4 +76,5 @@ def refresh_session(session_id: str):
     sql = "UPDATE `Web_3dprints`.`cart__items` SET `timestamp` = now() WHERE session_id = %s"
     cursor.execute(sql, (session_id))
     db.commit()
+    cursor.callproc("expire_sessions")
     db.close()
