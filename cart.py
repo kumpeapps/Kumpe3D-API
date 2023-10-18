@@ -53,7 +53,6 @@ class Cart(Resource):
                     session_id,
                     user_id,
                     sku,
-                    title,
                     quantity,
                     customization
                 FROM
