@@ -207,10 +207,32 @@ def refresh_session(session_id: str, user_id: int):
 # TODO:
 class Checkout(Resource):
     """Endpoints for Checkout"""
+
     logger = logging.getLogger("checkout")
+
     # TODO:
     def post(self):
         """Checkout"""
+        self.logger.debug("start post")
+        return (
+            {"response": "Not Implemented", "status_code": 501},
+            501,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
+
+    # TODO:
+    def get(self):
+        """Order Status"""
+        self.logger.debug("start post")
+        return (
+            {"response": "Not Implemented", "status_code": 501},
+            501,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
+
+    # TODO:
+    def put(self):
+        """Order Update"""
         self.logger.debug("start post")
         return (
             {"response": "Not Implemented", "status_code": 501},
