@@ -3,7 +3,7 @@ import setup  # pylint: disable=unused-import, wrong-import-order
 from flask import Flask
 from flask_restful import Api
 from header_data import HeaderData  # pylint: disable=no-name-in-module
-from products import Product, ProductPrice, ProductImages
+from products import Product, ProductPrice, ProductImages, Filament
 from siteparams import SiteParams
 from cart import Cart
 from orders import Order
@@ -34,6 +34,9 @@ api.add_resource(Cart, "/cart")
 
 # Checkout
 api.add_resource(Order, "/order")
+
+# Filament
+api.add_resource(Filament, "/filament")
 
 
 if __name__ == "__main__":

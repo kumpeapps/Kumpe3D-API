@@ -175,3 +175,53 @@ class ProductImages(Resource):
             200,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
+
+
+class Filament(Resource):
+    """Filament Functions"""
+
+    logging.basicConfig(
+        filename="kumpe3d-api.log",
+        filemode="a",
+        format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
+        level=Params.log_level(),
+    )
+    logger = logging.getLogger("filament")
+
+    def get(self) -> list:
+        """Get Product Filament Options"""
+        logger.debug("start get product filament options")
+        args = request.args
+        logger.debug("convert sku to array")
+        try:
+            sku = helpers.get_sku_array(args["sku"])
+            filament_filter = args["filter"]
+        except KeyError:
+            return (
+                {"error": "sku and filter url parameters are required", "status_code": 422},
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = "CALL get_filament_options(%s, %s);"
+        cursor.execute(sql, (sku["base_sku"], filament_filter))
+        logger.debug(sql)
+        response = cursor.fetchall()
+        cursor.close()
+        db.close()
+        logger.debug(response)
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
