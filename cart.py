@@ -214,7 +214,7 @@ class Cart(Resource):
         return (
             {"status_code": 202},
             202,
-            {"Access-Control-Allow-Origin": Params.base_url},
+            {"Access-Control-Allow-Origin": "*"},
         )
 
     def delete(self):
