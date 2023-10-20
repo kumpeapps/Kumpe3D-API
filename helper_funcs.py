@@ -33,3 +33,7 @@ def snake_to_camel(string):
     """Converts snake_case to camelCase"""
     string = string.split('_')
     return string[0] + ''.join(ele.title() for ele in string[1:])
+
+def percent_to_float(percent):
+    """Convert percent to float"""
+    return float(percent.strip('%'))/100

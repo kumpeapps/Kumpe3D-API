@@ -6,6 +6,7 @@ from flask_restful import Resource
 import pymysql
 from salestax import Arkansas as ar
 from params import Params
+import helper_funcs as helpers
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -22,8 +23,10 @@ class Cart(Resource):
     def options(self):
         """Return Options for Inflight Browser Request"""
         res = Response()
-        res.headers['Access-Control-Allow-Origin'] = '*'
-        res.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS, POST, PUT, PATCH, DELETE'
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers[
+            "Access-Control-Allow-Methods"
+        ] = "GET, OPTIONS, POST, PUT, PATCH, DELETE"
         return res
 
     def get(self):
@@ -72,10 +75,7 @@ class Cart(Resource):
                         AND session_id = %s;"""
         cursor.execute(total_sql, (session_id))
         cart_total = cursor.fetchone()
-        response = {
-            "list": cart_list,
-            "subtotal": cart_total['subtotal']
-        }
+        response = {"list": cart_list, "subtotal": cart_total["subtotal"]}
         cursor.close()
         db.close()
         logger.debug(response)
@@ -340,6 +340,7 @@ def refresh_session(session_id: str, user_id: int):
     db.commit()
     db.close()
 
+
 class Taxes(Resource):
     """Endpoints for Taxes"""
 
@@ -363,6 +364,26 @@ class Taxes(Resource):
 
         if state == "AR":
             response = ar.get(address, city, zip_code)
+
+        try:
+            subtotal = float(args["subtotal"])
+        except (KeyError, TypeError):
+            subtotal = 0
+
+        if response["is_state_taxable"]:
+            state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
+            response["state_tax"] = state_tax
+
+        if response["is_city_taxable"]:
+            city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
+            response["city_tax"] = city_tax
+
+        if response["is_county_taxable"]:
+            county_tax = subtotal * helpers.percent_to_float(
+                response["county_tax_rate"]
+            )
+            response["county_tax"] = county_tax
+
         self.logger.debug(response)
         return (
             {"response": response, "status_code": 200},
