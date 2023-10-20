@@ -80,6 +80,7 @@ class ZipCodes(Resource):
         zip_filter = args.get("zip", "%")
         city_filter = args.get("city", "%")
         state_filter = args.get("state", "%")
+        single_record = args.get("single_record", 0)
 
         sql_params = Params.SQL
         db = pymysql.connect(
@@ -101,7 +102,10 @@ class ZipCodes(Resource):
                     AND zip LIKE %s;"""
         cursor.execute(sql, (state_filter, city_filter, zip_filter))
         self.logger.debug(sql)
-        response = cursor.fetchall()
+        if single_record:
+            response = cursor.fetchone()
+        else:
+            response = cursor.fetchall()
         cursor.close()
         db.close()
         self.logger.debug(response)
