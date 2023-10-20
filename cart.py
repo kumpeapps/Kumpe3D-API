@@ -354,15 +354,16 @@ class Taxes(Resource):
 
     def get(self):
         """Get Tax Rates"""
-        json_args = request.get_json(force=True)
-        address = json_args["address"]
-        city = json_args["city"]
-        state = json_args["state"]
-        zip_code = json_args["zip"]
+        args = request.args
+        self.logger.debug(args)
+        address = args["address"]
+        city = args["city"]
+        state = args["state"]
+        zip_code = args["zip"]
 
         if state == "AR":
             response = ar.get(address, city, zip_code)
-
+        self.logger.debug(response)
         return (
             {"response": response, "status_code": 200},
             200,
