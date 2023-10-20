@@ -1,7 +1,7 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request
+from flask import request, Response
 from flask_restful import Resource
 import pymysql
 from params import Params
@@ -20,6 +20,12 @@ class Order(Resource):
     """Endpoints for Checkout"""
 
     logger = logging.getLogger("checkout")
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers['Access-Control-Allow-Origin'] = '*'
+        res.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS, POST, PUT, PATCH, DELETE'
+        return res
 
     # TODO:
     def post(self):

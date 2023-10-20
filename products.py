@@ -1,7 +1,7 @@
 """Products Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request
+from flask import request, Response
 from flask_restful import Resource
 
 # from flask_restful import reqparse
@@ -187,6 +187,13 @@ class Filament(Resource):
         level=Params.log_level(),
     )
     logger = logging.getLogger("filament")
+    
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers['Access-Control-Allow-Origin'] = '*'
+        res.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        return res
 
     def get(self) -> list:
         """Get Product Filament Options"""
