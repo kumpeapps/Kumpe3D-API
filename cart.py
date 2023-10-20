@@ -66,7 +66,7 @@ class Cart(Resource):
         cart_total = cursor.fetchone()
         response = {
             "list": cart_list,
-            "total": cart_total.totalPrice
+            "total": cart_total
         }
         cursor.close()
         db.close()
