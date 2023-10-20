@@ -372,17 +372,17 @@ class Taxes(Resource):
 
         if response["is_state_taxable"]:
             state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
-            response["state_tax"] = state_tax
+            response["state_tax"] = round(state_tax, 2)
 
         if response["is_city_taxable"]:
             city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
-            response["city_tax"] = city_tax
+            response["city_tax"] = round(city_tax, 2)
 
         if response["is_county_taxable"]:
             county_tax = subtotal * helpers.percent_to_float(
                 response["county_tax_rate"]
             )
-            response["county_tax"] = county_tax
+            response["county_tax"] = round(county_tax, 2)
 
         self.logger.debug(response)
         return (
