@@ -56,7 +56,18 @@ class Cart(Resource):
                     AND session_id = %s;"""
         cursor.execute(sql, (session_id))
         logger.debug(sql)
-        response = cursor.fetchall()
+        cart_list = cursor.fetchall()
+        total_sql = """SELECT 
+                            SUM(totalPrice)
+                    FROM Web_3dprints.vw_cart__items
+                    WHERE 1=1
+                        AND session_id = %s;"""
+        cursor.execute(total_sql, (session_id))
+        cart_total = cursor.fetchone()
+        response = {
+            "list": cart_list,
+            "total": cart_total
+        }
         cursor.close()
         db.close()
         logger.debug(response)
