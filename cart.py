@@ -363,7 +363,7 @@ class Taxes(Resource):
         zip_code = args["zip"]
 
         try:
-            subtotal = float(subtotal)
+            subtotal = float(args["subtotal"])
         except (KeyError, TypeError, ValueError):
             subtotal = 0
 
