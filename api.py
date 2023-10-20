@@ -6,7 +6,7 @@ from header_data import HeaderData  # pylint: disable=no-name-in-module
 from products import Product, ProductPrice, ProductImages, Filament
 from siteparams import SiteParams
 from cart import Cart
-from orders import Order
+from orders import Order, ZipCodes
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -37,6 +37,9 @@ api.add_resource(Order, "/order")
 
 # Filament
 api.add_resource(Filament, "/filament")
+
+# ZipCodes
+api.add_resource(ZipCodes, "/zipcode")
 
 
 if __name__ == "__main__":
