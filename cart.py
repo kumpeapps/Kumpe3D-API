@@ -169,7 +169,7 @@ class Cart(Resource):
                     "status_code": 422,
                 },
                 422,
-                {"Access-Control-Allow-Origin": Params.base_url},
+                {"Access-Control-Allow-Origin": "*"},
             )
         customization = json_args.get("customization", "")
         try:
@@ -179,7 +179,7 @@ class Cart(Resource):
             return (
                 {"error": "session_id query parameter is required", "status_code": 422},
                 422,
-                {"Access-Control-Allow-Origin": Params.base_url},
+                {"Access-Control-Allow-Origin": "*"},
             )
 
         try:
