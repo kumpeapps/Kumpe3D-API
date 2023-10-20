@@ -57,8 +57,8 @@ class Cart(Resource):
         cursor.execute(sql, (session_id))
         logger.debug(sql)
         cart_list = cursor.fetchall()
-        total_sql = """SELECT 
-                            SUM(totalPrice)
+        total_sql = """SELECT
+                            SUM(totalPrice) as totalPrice
                     FROM Web_3dprints.vw_cart__items
                     WHERE 1=1
                         AND session_id = %s;"""
@@ -66,7 +66,7 @@ class Cart(Resource):
         cart_total = cursor.fetchone()
         response = {
             "list": cart_list,
-            "total": cart_total
+            "total": cart_total.totalPrice
         }
         cursor.close()
         db.close()
