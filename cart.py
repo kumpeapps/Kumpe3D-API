@@ -45,7 +45,7 @@ class Cart(Resource):
 
         try:
             user_id = int(args["user_id"])
-        except KeyError:
+        except (KeyError, ValueError):
             logger.warning("user_id missing")
             user_id = 0
 
@@ -95,7 +95,7 @@ class Cart(Resource):
         logger.debug("JSON ARGS: %s", json_args)
         try:
             qty = int(json_args["quantity"])
-        except KeyError:
+        except (KeyError, ValueError):
             qty = 1
         custom = json_args.get("customization", "")
         try:
@@ -122,7 +122,7 @@ class Cart(Resource):
 
         try:
             user_id = int(args["user_id"])
-        except KeyError:
+        except (KeyError, ValueError):
             logger.warning("user_id missing")
             user_id = 0
         refresh_session(session_id, user_id)
@@ -165,7 +165,7 @@ class Cart(Resource):
         json_args = request.get_json(force=True)
         try:
             qty = int(json_args["quantity"])
-        except KeyError:
+        except (KeyError, ValueError):
             qty = 1
         try:
             sku = json_args["sku"]
@@ -192,7 +192,7 @@ class Cart(Resource):
 
         try:
             user_id = int(args["user_id"])
-        except KeyError:
+        except (KeyError, ValueError):
             logger.warning("user_id missing")
             user_id = 0
         refresh_session(session_id, user_id)
@@ -255,7 +255,7 @@ class Cart(Resource):
 
         try:
             user_id = int(args["user_id"])
-        except KeyError:
+        except (KeyError, ValueError):
             logger.warning("user_id missing")
             user_id = 0
         refresh_session(session_id, user_id)
@@ -305,7 +305,7 @@ class Cart(Resource):
             )
         try:
             user_id = int(args["user_id"])
-        except KeyError:
+        except (KeyError, ValueError):
             logger.warning("user_id missing")
             user_id = 0
 
@@ -367,7 +367,7 @@ class Taxes(Resource):
 
         try:
             subtotal = float(args["subtotal"])
-        except (KeyError, TypeError):
+        except (KeyError, TypeError, ValueError):
             subtotal = 0
 
         if response["is_state_taxable"]:
