@@ -5,7 +5,6 @@ from flask import request, Response
 from flask_restful import Resource
 import pymysql
 from params import Params
-import helper_funcs as helpers
 
 logging.basicConfig(
     filename="kumpe3d-api.log",

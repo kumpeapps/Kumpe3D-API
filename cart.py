@@ -4,6 +4,7 @@ import logging
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
+from salestax import Arkansas as ar
 from params import Params
 
 logging.basicConfig(
@@ -338,3 +339,32 @@ def refresh_session(session_id: str, user_id: int):
     cursor.callproc("expire_sessions")
     db.commit()
     db.close()
+
+class Taxes(Resource):
+    """Endpoints for Taxes"""
+
+    logger = logging.getLogger("Taxes")
+
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return res
+
+    def get(self):
+        """Get Tax Rates"""
+        json_args = request.get_json(force=True)
+        address = json_args["address"]
+        city = json_args["city"]
+        state = json_args["state"]
+        zip_code = json_args["zip"]
+
+        if state == "AR":
+            response = ar.get(address, city, zip_code)
+
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": "*"},
+        )
