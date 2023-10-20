@@ -65,7 +65,7 @@ class Cart(Resource):
         logger.debug(sql)
         cart_list = cursor.fetchall()
         total_sql = """SELECT
-                            SUM(totalPrice) as subtotal
+                            ROUND(SUM(totalPrice), 2) as subtotal
                     FROM Web_3dprints.vw_cart__items
                     WHERE 1=1
                         AND session_id = %s;"""
