@@ -362,31 +362,42 @@ class Taxes(Resource):
         state = args["state"]
         zip_code = args["zip"]
 
-        if state == "AR":
-            response = ar.get(address, city, zip_code)
-
         try:
-            subtotal = float(args["subtotal"])
+            subtotal = float(subtotal)
         except (KeyError, TypeError, ValueError):
             subtotal = 0
 
-        if response["is_state_taxable"]:
-            state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
-            response["state_tax"] = round(state_tax, 2)
+        response = get_taxes(address, city, state, zip_code, subtotal)
 
-        if response["is_city_taxable"]:
-            city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
-            response["city_tax"] = round(city_tax, 2)
-
-        if response["is_county_taxable"]:
-            county_tax = subtotal * helpers.percent_to_float(
-                response["county_tax_rate"]
-            )
-            response["county_tax"] = round(county_tax, 2)
-
-        self.logger.debug(response)
         return (
             {"response": response, "status_code": 200},
             200,
             {"Access-Control-Allow-Origin": "*"},
         )
+
+
+def get_taxes(
+    address: str, city: str, state: str, zip_code: str, subtotal: float
+) -> dict:
+    """Get Taxes"""
+    if state == "AR":
+        response = ar.get(address, city, zip_code)
+
+    try:
+        subtotal = float(subtotal)
+    except (KeyError, TypeError, ValueError):
+        subtotal = 0
+
+    if response["is_state_taxable"]:
+        state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
+        response["state_tax"] = round(state_tax, 2)
+
+    if response["is_city_taxable"]:
+        city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
+        response["city_tax"] = round(city_tax, 2)
+
+    if response["is_county_taxable"]:
+        county_tax = subtotal * helpers.percent_to_float(response["county_tax_rate"])
+        response["county_tax"] = round(county_tax, 2)
+
+    return response
