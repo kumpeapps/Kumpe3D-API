@@ -71,7 +71,9 @@ class Cart(Resource):
         """Post New Item to Cart"""
         logger.debug("start create cart item")
         args = request.args
+        logger.debug("Args:", args)
         json_args = request.get_json(force=True)
+        logger.debug("JSON ARGS: ", json_args)
         try:
             qty = int(json_args["quantity"])
         except KeyError:
