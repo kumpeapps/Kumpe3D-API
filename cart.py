@@ -1,7 +1,7 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request
+from flask import request, Response
 from flask_restful import Resource
 import pymysql
 from params import Params
@@ -17,6 +17,12 @@ logger = logging.getLogger("cart")
 
 class Cart(Resource):
     """Shopping Cart Functions"""
+
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers['X-Content-Type-Options'] = '*'
+        return res
 
     def get(self):
         """Get Cart Items"""
