@@ -21,7 +21,8 @@ class Cart(Resource):
     def options(self):
         """Return Options for Inflight Browser Request"""
         res = Response()
-        res.headers['X-Content-Type-Options'] = '*'
+        res.headers['Access-Control-Allow-Origin'] = '*'
+        res.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS, POST, PUT, PATCH, DELETE'
         return res
 
     def get(self):
