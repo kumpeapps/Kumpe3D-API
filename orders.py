@@ -54,7 +54,7 @@ class Checkout(Resource):
             self.logger.warning("user_id missing")
             user_id = 0
         
-        response = build_checkout_data(session_id, user_id, json_args)
+        response = build_checkout_data(session_id, user_id, json_args, args)
         return (
             {"response": response, "status_code": 200},
             200,
@@ -195,7 +195,8 @@ def get_taxes(
     return response
 
 
-def build_checkout_data(session_id: str, user_id: int, json_args: dict) -> dict:
+def build_checkout_data(session_id: str, user_id: int, json_args: dict, args: dict) -> dict:
+    """Build Checkout Data"""
     first_name = json_args.get("fName", "")
     last_name = json_args.get("lName", "")
     company = json_args.get("company", "")
