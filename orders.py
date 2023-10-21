@@ -34,7 +34,7 @@ class Checkout(Resource):
 
     # TODO:
     def post(self):
-        """Get Cart Items"""
+        """Get Checkout Data"""
         self.logger.debug("start get checkout data")
         args = request.args
         self.logger.debug(args)
@@ -49,6 +49,12 @@ class Checkout(Resource):
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
+        try:
+            user_id = int(args['user_id'])
+        except (KeyError, ValueError):
+            self.logger.warning("user_id missing")
+            user_id = 0
+
         first_name = json_args.get("fName", "")
         last_name = json_args.get("lName", "")
         company = json_args.get("company", "")
@@ -56,7 +62,7 @@ class Checkout(Resource):
         address2 = json_args.get("address2", "")
         city = json_args.get("city", "")
         state = json_args.get("state", "")
-        zip = json_args.get("zip", "")
+        zip_code = json_args.get("zip", "")
         comments = json_args.get("comments", "")
         shipping_address = {
             "fName": first_name,
@@ -66,19 +72,17 @@ class Checkout(Resource):
             "address2": address2,
             "city": city,
             "state": state,
-            "zip": zip,
+            "zip": zip_code,
             "comments": comments
         }
 
-        try:
-            user_id = int(args["user_id"])
-        except (KeyError, ValueError):
-            self.logger.warning("user_id missing")
-            user_id = 0
-
         cart = get_cart(session_id, user_id)
+        response = {
+            "shipping_address": shipping_address,
+            "cart": cart
+        }
         return (
-            {"response": shipping_address, "status_code": 200},
+            {"response": cart, "status_code": 200},
             200,
             {"Access-Control-Allow-Origin": "*"},
         )
@@ -189,6 +193,12 @@ def get_taxes(
     """Get Taxes"""
     if state == "AR":
         response = ar.get(address, city, zip_code)
+    else:
+        response = {
+            "is_state_taxable": False,
+            "is_county_taxable": False,
+            "is_city_taxable": False
+        }
 
     try:
         subtotal = float(subtotal)
