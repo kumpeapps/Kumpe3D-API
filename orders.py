@@ -47,7 +47,9 @@ class Checkout(Resource):
         """Get Cart Items"""
         self.logger.debug("start get checkout data")
         args = request.args
+        self.logger.debug(args)
         json_args = request.get_json(force=True)
+        self.logger.debug(json_args)
         try:
             session_id = args["session_id"]
         except KeyError:
