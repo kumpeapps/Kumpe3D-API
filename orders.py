@@ -34,16 +34,6 @@ class Checkout(Resource):
 
     # TODO:
     def post(self):
-        """Checkout"""
-        self.logger.debug("start post")
-        return (
-            {"response": "Not Implemented", "status_code": 501},
-            501,
-            {"Access-Control-Allow-Origin": Params.base_url},
-        )
-
-    # TODO:
-    def get(self):
         """Get Cart Items"""
         self.logger.debug("start get checkout data")
         args = request.args
