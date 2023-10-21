@@ -49,7 +49,7 @@ class Checkout(Resource):
         args = request.args
         self.logger.debug(args)
         json_args = request.get_json(force=True)
-        self.logger.debug(json_args)
+        self.logger.debug(request.values)
         try:
             session_id = args["session_id"]
         except KeyError:
