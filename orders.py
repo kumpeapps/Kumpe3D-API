@@ -32,14 +32,13 @@ class Checkout(Resource):
         ] = "GET, OPTIONS, POST, PUT, PATCH, DELETE"
         return res
 
-    # TODO:
+
     def post(self):
         """Get Checkout Data"""
         self.logger.debug("start get checkout data")
         args = request.args
         self.logger.debug(args)
         json_args = request.get_json(force=True)
-        self.logger.debug(request.values)
         try:
             session_id = args["session_id"]
         except KeyError:
@@ -47,42 +46,17 @@ class Checkout(Resource):
             return (
                 {"error": "session_id query parameter is required", "status_code": 422},
                 422,
-                {"Access-Control-Allow-Origin": Params.base_url},
+                {"Access-Control-Allow-Origin": "*"},
             )
         try:
-            user_id = int(args['user_id'])
+            user_id = int(args["user_id"])
         except (KeyError, ValueError):
             self.logger.warning("user_id missing")
             user_id = 0
-
-        first_name = json_args.get("fName", "")
-        last_name = json_args.get("lName", "")
-        company = json_args.get("company", "")
-        address = json_args.get("address", "")
-        address2 = json_args.get("address2", "")
-        city = json_args.get("city", "")
-        state = json_args.get("state", "")
-        zip_code = json_args.get("zip", "")
-        comments = json_args.get("comments", "")
-        shipping_address = {
-            "fName": first_name,
-            "lName": last_name,
-            "company": company,
-            "address": address,
-            "address2": address2,
-            "city": city,
-            "state": state,
-            "zip": zip_code,
-            "comments": comments
-        }
-
-        cart = get_cart(session_id, user_id)
-        response = {
-            "shipping_address": shipping_address,
-            "cart": cart
-        }
+        
+        response = build_checkout_data(session_id, user_id, json_args)
         return (
-            {"response": cart, "status_code": 200},
+            {"response": response, "status_code": 200},
             200,
             {"Access-Control-Allow-Origin": "*"},
         )
@@ -152,6 +126,7 @@ class ZipCodes(Resource):
             {"Access-Control-Allow-Origin": Params.base_url},
         )
 
+
 class Taxes(Resource):
     """Endpoints for Taxes"""
 
@@ -197,7 +172,7 @@ def get_taxes(
         response = {
             "is_state_taxable": False,
             "is_county_taxable": False,
-            "is_city_taxable": False
+            "is_city_taxable": False,
         }
 
     try:
@@ -217,4 +192,47 @@ def get_taxes(
         county_tax = subtotal * helpers.percent_to_float(response["county_tax_rate"])
         response["county_tax"] = round(county_tax, 2)
 
+    return response
+
+
+def build_checkout_data(session_id: str, user_id: int, json_args: dict) -> dict:
+    first_name = json_args.get("fName", "")
+    last_name = json_args.get("lName", "")
+    company = json_args.get("company", "")
+    address = json_args.get("address", "")
+    address2 = json_args.get("address2", "")
+    city = json_args.get("city", "")
+    state = json_args.get("state", "")
+    zip_code = json_args.get("zip", "")
+    comments = json_args.get("comments", "")
+    shipping_address = {
+        "fName": first_name,
+        "lName": last_name,
+        "company": company,
+        "address": address,
+        "address2": address2,
+        "city": city,
+        "state": state,
+        "zip": zip_code,
+        "comments": comments,
+    }
+
+    cart = get_cart(session_id, user_id)
+    taxes = get_taxes(address, city, state, zip_code, cart["subtotal"])
+    state_tax = taxes.get("state_tax", 0)
+    county_tax = taxes.get("county_tax", 0)
+    city_tax = taxes.get("city_tax", 0)
+    paypal_transaction_id = args.get("paypal_transaction_id", "")
+    tax_total = state_tax + county_tax + city_tax
+    shipping_total = 10
+    grand_total = cart["subtotal"] + shipping_total + tax_total
+    response = {
+        "shippingAddress": shipping_address,
+        "cart": cart,
+        "taxes": taxes,
+        "taxTotal": tax_total,
+        "shippingCost": shipping_total,
+        "grandTotal": grand_total,
+        "paypalTransactionID": paypal_transaction_id,
+    }
     return response
