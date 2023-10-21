@@ -2,7 +2,7 @@
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
 import json
-from flask import request, jsonify
+from flask import request
 from flask_restful import Resource
 from helper_funcs import snake_to_camel
 

@@ -187,12 +187,12 @@ class Filament(Resource):
         level=Params.log_level(),
     )
     logger = logging.getLogger("filament")
-    
+
     def options(self):
         """Return Options for Inflight Browser Request"""
         res = Response()
-        res.headers['Access-Control-Allow-Origin'] = '*'
-        res.headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS'
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
         return res
 
     def get(self) -> list:
@@ -205,7 +205,10 @@ class Filament(Resource):
             filament_filter = args["filter"]
         except KeyError:
             return (
-                {"error": "sku and filter url parameters are required", "status_code": 422},
+                {
+                    "error": "sku and filter url parameters are required",
+                    "status_code": 422,
+                },
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )

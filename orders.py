@@ -63,34 +63,34 @@ class Checkout(Resource):
             {"Access-Control-Allow-Origin": "*"},
         )
 
-    # TODO:
-    def put(self):
-        """Finalize Checkout"""
-        self.logger.debug("start finalize checkout (PUT)")
-        args = request.args
-        self.logger.debug("Args: %s", args)
-        json_args = request.get_json(force=True)
-        self.logger.debug("JSON ARGS: %s", json_args)
-        try:
-            session_id = args["session_id"]
-        except KeyError:
-            self.logger.error("session_id missing")
-            return (
-                {"error": "session_id query parameter is required", "status_code": 422},
-                422,
-                {"Access-Control-Allow-Origin": "*"},
-            )
-        self.logger.debug(session_id)
-        try:
-            user_id = int(args["user_id"])
-        except (KeyError, ValueError):
-            self.logger.warning("user_id missing")
-            user_id = 0
-        return (
-            {"response": "Not Implemented", "status_code": 501},
-            501,
-            {"Access-Control-Allow-Origin": Params.base_url},
-        )
+    # # TODO:
+    # def put(self):
+    #     """Finalize Checkout"""
+    #     self.logger.debug("start finalize checkout (PUT)")
+    #     args = request.args
+    #     self.logger.debug("Args: %s", args)
+    #     json_args = request.get_json(force=True)
+    #     self.logger.debug("JSON ARGS: %s", json_args)
+    #     try:
+    #         session_id = args["session_id"]
+    #     except KeyError:
+    #         self.logger.error("session_id missing")
+    #         return (
+    #             {"error": "session_id query parameter is required", "status_code": 422},
+    #             422,
+    #             {"Access-Control-Allow-Origin": "*"},
+    #         )
+    #     self.logger.debug(session_id)
+    #     try:
+    #         user_id = int(args["user_id"])
+    #     except (KeyError, ValueError):
+    #         self.logger.warning("user_id missing")
+    #         user_id = 0
+    #     return (
+    #         {"response": "Not Implemented", "status_code": 501},
+    #         501,
+    #         {"Access-Control-Allow-Origin": Params.base_url},
+    #     )
 
 
 class ZipCodes(Resource):

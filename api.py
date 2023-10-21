@@ -46,4 +46,4 @@ api.add_resource(Taxes, "/taxes")
 
 
 if __name__ == "__main__":
-    app.run(port=8081, debug=True)  # run our Flask app
+    app.run(port=8081)  # run our Flask app
