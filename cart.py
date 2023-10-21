@@ -4,9 +4,7 @@ import logging
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
-from salestax import Arkansas as ar
 from params import Params
-import helper_funcs as helpers
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -49,37 +47,7 @@ class Cart(Resource):
             logger.warning("user_id missing")
             user_id = 0
 
-        sql_params = Params.SQL
-        db = pymysql.connect(
-            db=sql_params.database,
-            user=sql_params.username,
-            passwd=sql_params.password,
-            host=sql_params.server,
-            port=3306,
-        )
-        logger.debug("create cursor")
-        cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = """SELECT
-                    *
-                FROM
-                    Web_3dprints.vw_cart__items
-                WHERE 1=1
-                    AND session_id = %s;"""
-        cursor.execute(sql, (session_id))
-        logger.debug(sql)
-        cart_list = cursor.fetchall()
-        total_sql = """SELECT
-                            ROUND(SUM(totalPrice), 2) as subtotal
-                    FROM Web_3dprints.vw_cart__items
-                    WHERE 1=1
-                        AND session_id = %s;"""
-        cursor.execute(total_sql, (session_id))
-        cart_total = cursor.fetchone()
-        response = {"list": cart_list, "subtotal": cart_total["subtotal"]}
-        cursor.close()
-        db.close()
-        logger.debug(response)
-        refresh_session(session_id, user_id)
+        response = get_cart(session_id, user_id)
         return (
             {"response": response, "status_code": 200},
             200,
@@ -340,64 +308,37 @@ def refresh_session(session_id: str, user_id: int):
     db.commit()
     db.close()
 
-
-class Taxes(Resource):
-    """Endpoints for Taxes"""
-
-    logger = logging.getLogger("Taxes")
-
-    def options(self):
-        """Return Options for Inflight Browser Request"""
-        res = Response()
-        res.headers["Access-Control-Allow-Origin"] = "*"
-        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
-        return res
-
-    def get(self):
-        """Get Tax Rates"""
-        args = request.args
-        self.logger.debug(args)
-        address = args["address"]
-        city = args["city"]
-        state = args["state"]
-        zip_code = args["zip"]
-
-        try:
-            subtotal = float(args["subtotal"])
-        except (KeyError, TypeError, ValueError):
-            subtotal = 0
-
-        response = get_taxes(address, city, state, zip_code, subtotal)
-
-        return (
-            {"response": response, "status_code": 200},
-            200,
-            {"Access-Control-Allow-Origin": "*"},
+def get_cart(session_id: str, user_id: int) -> dict:
+    """Get Shopping Cart"""
+    sql_params = Params.SQL
+    db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
         )
-
-
-def get_taxes(
-    address: str, city: str, state: str, zip_code: str, subtotal: float
-) -> dict:
-    """Get Taxes"""
-    if state == "AR":
-        response = ar.get(address, city, zip_code)
-
-    try:
-        subtotal = float(subtotal)
-    except (KeyError, TypeError, ValueError):
-        subtotal = 0
-
-    if response["is_state_taxable"]:
-        state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
-        response["state_tax"] = round(state_tax, 2)
-
-    if response["is_city_taxable"]:
-        city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
-        response["city_tax"] = round(city_tax, 2)
-
-    if response["is_county_taxable"]:
-        county_tax = subtotal * helpers.percent_to_float(response["county_tax_rate"])
-        response["county_tax"] = round(county_tax, 2)
-
+    logger.debug("create cursor")
+    cursor = db.cursor(pymysql.cursors.DictCursor)
+    sql = """SELECT
+                *
+            FROM
+                Web_3dprints.vw_cart__items
+            WHERE 1=1
+                AND session_id = %s;"""
+    cursor.execute(sql, (session_id))
+    logger.debug(sql)
+    cart_list = cursor.fetchall()
+    total_sql = """SELECT
+                        ROUND(SUM(totalPrice), 2) as subtotal
+                FROM Web_3dprints.vw_cart__items
+                WHERE 1=1
+                    AND session_id = %s;"""
+    cursor.execute(total_sql, (session_id))
+    cart_total = cursor.fetchone()
+    response = {"list": cart_list, "subtotal": cart_total["subtotal"]}
+    cursor.close()
+    db.close()
+    logger.debug(response)
+    refresh_session(session_id, user_id)
     return response

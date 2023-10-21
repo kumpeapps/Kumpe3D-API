@@ -4,7 +4,10 @@ import logging
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
+from salestax import Arkansas as ar
 from params import Params
+import helper_funcs as helpers
+from cart import get_cart
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -15,7 +18,7 @@ logging.basicConfig(
 
 
 # TODO:
-class Order(Resource):
+class Checkout(Resource):
     """Endpoints for Checkout"""
 
     logger = logging.getLogger("checkout")
@@ -41,12 +44,51 @@ class Order(Resource):
 
     # TODO:
     def get(self):
-        """Order Status"""
-        self.logger.debug("start post")
+        """Get Cart Items"""
+        self.logger.debug("start get checkout data")
+        args = request.args
+        json_args = request.get_json(force=True)
+        try:
+            session_id = args["session_id"]
+        except KeyError:
+            self.logger.error("session_id missing")
+            return (
+                {"error": "session_id query parameter is required", "status_code": 422},
+                422,
+                {"Access-Control-Allow-Origin": Params.base_url},
+            )
+        first_name = json_args.get("fName", "")
+        last_name = json_args.get("lName", "")
+        company = json_args.get("company", "")
+        address = json_args.get("address", "")
+        address2 = json_args.get("address2", "")
+        city = json_args.get("city", "")
+        state = json_args.get("state", "")
+        zip = json_args.get("zip", "")
+        comments = json_args.get("comments", "")
+        shipping_address = {
+            "fName": first_name,
+            "lName": last_name,
+            "company": company,
+            "address": address,
+            "address2": address2,
+            "city": city,
+            "state": state,
+            "zip": zip,
+            "comments": comments
+        }
+
+        try:
+            user_id = int(args["user_id"])
+        except (KeyError, ValueError):
+            self.logger.warning("user_id missing")
+            user_id = 0
+
+        cart = get_cart(session_id, user_id)
         return (
-            {"response": "Not Implemented", "status_code": 501},
-            501,
-            {"Access-Control-Allow-Origin": Params.base_url},
+            {"response": shipping_address, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": "*"},
         )
 
     # TODO:
@@ -113,3 +155,64 @@ class ZipCodes(Resource):
             200,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
+
+class Taxes(Resource):
+    """Endpoints for Taxes"""
+
+    logger = logging.getLogger("Taxes")
+
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return res
+
+    def get(self):
+        """Get Tax Rates"""
+        args = request.args
+        self.logger.debug(args)
+        address = args["address"]
+        city = args["city"]
+        state = args["state"]
+        zip_code = args["zip"]
+
+        try:
+            subtotal = float(args["subtotal"])
+        except (KeyError, TypeError, ValueError):
+            subtotal = 0
+
+        response = get_taxes(address, city, state, zip_code, subtotal)
+
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": "*"},
+        )
+
+
+def get_taxes(
+    address: str, city: str, state: str, zip_code: str, subtotal: float
+) -> dict:
+    """Get Taxes"""
+    if state == "AR":
+        response = ar.get(address, city, zip_code)
+
+    try:
+        subtotal = float(subtotal)
+    except (KeyError, TypeError, ValueError):
+        subtotal = 0
+
+    if response["is_state_taxable"]:
+        state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
+        response["state_tax"] = round(state_tax, 2)
+
+    if response["is_city_taxable"]:
+        city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
+        response["city_tax"] = round(city_tax, 2)
+
+    if response["is_county_taxable"]:
+        county_tax = subtotal * helpers.percent_to_float(response["county_tax_rate"])
+        response["county_tax"] = round(county_tax, 2)
+
+    return response
