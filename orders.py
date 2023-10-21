@@ -38,6 +38,7 @@ class Checkout(Resource):
         args = request.args
         self.logger.debug(args)
         json_args = request.get_json(force=True)
+        self.logger.debug(json_args)
         try:
             session_id = args["session_id"]
         except KeyError:
@@ -47,13 +48,15 @@ class Checkout(Resource):
                 422,
                 {"Access-Control-Allow-Origin": "*"},
             )
+        self.logger.debug(session_id)
         try:
             user_id = int(args["user_id"])
         except (KeyError, ValueError):
             self.logger.warning("user_id missing")
             user_id = 0
-
+        self.logger.debug(session_id)
         response = build_checkout_data(session_id, user_id, json_args, args)
+        self.logger.debug(response)
         return (
             {"response": response, "status_code": 200},
             200,
