@@ -208,6 +208,7 @@ def build_checkout_data(
     zip_code = json_args.get("zip", "")
     comments = json_args.get("comments", "")
     email = json_args.get("email", "")
+    country = json_args.get("country", "")
     shipping_address = {
         "fName": first_name,
         "lName": last_name,
@@ -217,6 +218,7 @@ def build_checkout_data(
         "city": city,
         "state": state,
         "zip": zip_code,
+        "country": country,
         "comments": comments,
         "email": email
     }
