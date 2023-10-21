@@ -207,6 +207,7 @@ def build_checkout_data(
     state = json_args.get("state", "")
     zip_code = json_args.get("zip", "")
     comments = json_args.get("comments", "")
+    email = json_args.get("email", "")
     shipping_address = {
         "fName": first_name,
         "lName": last_name,
@@ -217,6 +218,7 @@ def build_checkout_data(
         "state": state,
         "zip": zip_code,
         "comments": comments,
+        "email": email
     }
 
     cart = get_cart(session_id, user_id)
