@@ -135,10 +135,12 @@ class Checkout(Resource):
                         `taxable_city`,
                         `state_tax`,
                         `county_tax`,
-                        `city_tax`)
+                        `city_tax`
+                        `client_ip`,
+                        `client_browser`)
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
         if paypal.verify_order(data["ppCaptureID"]):
             order_status = 3
@@ -175,6 +177,8 @@ class Checkout(Resource):
             data["taxData"]["state_tax"],
             data["taxData"]["county_tax"],
             data["taxData"]["city_tax"],
+            data["client_ip"],
+            data["browser"],
         )
         cursor.execute(orders_sql, orders_values)
         db.commit()
