@@ -1202,5 +1202,5 @@ def generate_email(data: dict):
 
     for key in data:
         value = data[key]
-        html_email.replace(key, value)
+        html_email.replace(key, f'{value}')
     return html_email
