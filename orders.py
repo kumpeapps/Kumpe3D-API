@@ -343,7 +343,8 @@ class Checkout(Resource):
         cursor.execute(empty_session_sql, session_id)
         db.commit()
         email = generate_email(email_data)
-        send_email(data["emailAddress"], f"Kumpe3D Order {order_id}", email)
+        if order_status == 3:
+            send_email(data["emailAddress"], f"Kumpe3D Order {order_id}", email)
 
         db.close()
         return (
