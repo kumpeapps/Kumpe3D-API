@@ -207,11 +207,11 @@ class Checkout(Resource):
         email_data["email_state"] = data["state"]
         email_data["email_zip"] = data["zip"]
         email_data["email_country"] = data["country"]
-        email_data["email_subtotal"] = "$" + data["subtotal"]
-        email_data["email_taxes"] = "$" + data["taxes"]
-        email_data["email_shipping"] = "$" + data["shippingCost"]
-        email_data["email_discount"] = "$" + data["discount"]
-        email_data["email_total"] = "$" + data["total"]
+        email_data["email_subtotal"] = "$" + f'{data["subtotal"]}'
+        email_data["email_taxes"] = "$" + f'{data["taxes"]}'
+        email_data["email_shipping"] = "$" + f'{data["shippingCost"]}'
+        email_data["email_discount"] = "$" + f'{data["discount"]}'
+        email_data["email_total"] = "$" + f'{data["total"]}'
         email_data["email_paymentmethod"] = data["paymentMethod"]
         email_data["email_shippingmethod"] = "Flat Rate"
         email_data["email_notes"] = data["orderNotes"]
