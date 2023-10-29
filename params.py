@@ -45,6 +45,18 @@ class Params:
                 'port': Params.SQL.port,
                 'db': Params.SQL.database
             }
+    class PayPal:
+        """PayPal Parameters"""
+        api_url = creds.get_secret("API_URL", environment=app_env, path="/PAYPAL/").secret_value
+        client_id = creds.get_secret("CLIENT_ID", environment=app_env, path="/PAYPAL/").secret_value
+        secret = creds.get_secret("SECRET", environment=app_env, path="/PAYPAL/").secret_value
+    class SendPulse:
+        """Send Pulse Parameters"""
+        server = creds.get_secret("SERVER", environment=app_env, path="/SENDPULSE/").secret_value
+        port = creds.get_secret("PORT", environment=app_env, path="/SENDPULSE/").secret_value
+        username = creds.get_secret("USERNAME", environment=app_env, path="/SENDPULSE/").secret_value
+        password = creds.get_secret("PASSWORD", environment=app_env, path="/SENDPULSE/").secret_value
+        sender = creds.get_secret("SENDER", environment=app_env, path="/SENDPULSE/").secret_value
 
 
 if __name__ == "__main__":

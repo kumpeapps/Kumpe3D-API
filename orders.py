@@ -8,6 +8,9 @@ from salestax import Arkansas as ar
 from params import Params
 import helper_funcs as helpers
 from cart import get_cart
+from email_template import generate_email
+import paypal
+from send_email import send_email
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -63,34 +66,291 @@ class Checkout(Resource):
             {"Access-Control-Allow-Origin": "*"},
         )
 
-    # # TODO:
-    # def put(self):
-    #     """Finalize Checkout"""
-    #     self.logger.debug("start finalize checkout (PUT)")
-    #     args = request.args
-    #     self.logger.debug("Args: %s", args)
-    #     json_args = request.get_json(force=True)
-    #     self.logger.debug("JSON ARGS: %s", json_args)
-    #     try:
-    #         session_id = args["session_id"]
-    #     except KeyError:
-    #         self.logger.error("session_id missing")
-    #         return (
-    #             {"error": "session_id query parameter is required", "status_code": 422},
-    #             422,
-    #             {"Access-Control-Allow-Origin": "*"},
-    #         )
-    #     self.logger.debug(session_id)
-    #     try:
-    #         user_id = int(args["user_id"])
-    #     except (KeyError, ValueError):
-    #         self.logger.warning("user_id missing")
-    #         user_id = 0
-    #     return (
-    #         {"response": "Not Implemented", "status_code": 501},
-    #         501,
-    #         {"Access-Control-Allow-Origin": Params.base_url},
-    #     )
+    def put(self):
+        """Finalize Checkout"""
+        self.logger.debug("start finalize checkout (PUT)")
+
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        self.logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        args = request.args
+        self.logger.debug("Args: %s", args)
+        json_args = request.get_json(force=True)
+        self.logger.debug("JSON ARGS: %s", json_args)
+        try:
+            data = json_args["checkout_data"]
+            session_id = json_args["session_id"]
+            cart = data["cart"]
+        except KeyError:
+            self.logger.error("One or more parameters missing")
+            return (
+                {
+                    "error": "One or more required paramenters are missing.",
+                    "status_code": 422,
+                },
+                422,
+                {"Access-Control-Allow-Origin": "*"},
+            )
+        self.logger.debug(session_id)
+
+        try:
+            user_id = int(data["customerID"])
+        except (KeyError, ValueError):
+            self.logger.warning("user_id missing")
+            user_id = 0
+
+        orders_sql = """
+                    INSERT INTO `Web_3dprints`.`orders`
+                        (`idcustomers`,
+                        `first_name`,
+                        `last_name`,
+                        `company_name`,
+                        `email`,
+                        `street_address`,
+                        `street_address_2`,
+                        `city`,
+                        `state`,
+                        `zip`,
+                        `country`,
+                        `subtotal`,
+                        `taxes`,
+                        `shipping_cost`,
+                        `discount`,
+                        `total`,
+                        `order_date`,
+                        `status_id`,
+                        `payment_method`,
+                        `paypal_transaction_id`,
+                        `paypal_capture_id`,
+                        `notes`,
+                        `taxable_state`,
+                        `taxable_county`,
+                        `taxable_city`,
+                        `state_tax`,
+                        `county_tax`,
+                        `city_tax`)
+                    VALUES
+                        (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+        """
+        if paypal.verify_order(data["ppCaptureID"]):
+            order_status = 3
+            order_status_name = "Processed"
+        else:
+            order_status = 2
+            order_status_name = "Pending"
+
+        orders_values = (
+            user_id,
+            data["firstName"],
+            data["lastName"],
+            data["companyName"],
+            data["emailAddress"],
+            data["address"],
+            data["address2"],
+            data["city"],
+            data["state"],
+            data["zip"],
+            data["country"],
+            data["subtotal"],
+            data["taxes"],
+            data["shippingCost"],
+            data["discount"],
+            data["total"],
+            order_status,
+            data["paymentMethod"],
+            data["ppTransactionID"],
+            data["ppCaptureID"],
+            data["orderNotes"],
+            data["taxData"]["taxable_state"],
+            data["taxData"]["taxable_county"],
+            data["taxData"]["taxable_city"],
+            data["taxData"]["state_tax"],
+            data["taxData"]["county_tax"],
+            data["taxData"]["city_tax"],
+        )
+        cursor.execute(orders_sql, orders_values)
+        db.commit()
+        order_id = cursor.lastrowid
+        email_data = {}
+        email_data["email_orderid"] = order_id
+        email_data["email_date"] = ""
+        response = {}
+        response["id"] = order_id
+        email_data["email_products"] = ""
+        email_data["email_name"] = data["firstName"]
+        email_data["email_shippingname"] = data["firstName"] + " " + data["lastName"]
+        if data["companyName"] != "":
+            email_data["email_shippingname"] = (
+                email_data["email_shippingname"] + "<br>" + data["companyName"]
+            )
+        email_data["email_address"] = data["address"]
+        email_data["email_address2"] = data["address2"]
+        if email_data["email_address2"] != "":
+            email_data["email_address"] = (
+                email_data["email_address"] + "<br>" + email_data["email_address2"]
+            )
+        email_data["email_city"] = data["city"]
+        email_data["email_state"] = data["state"]
+        email_data["email_zip"] = data["zip"]
+        email_data["email_country"] = data["country"]
+        email_data["email_subtotal"] = "$" + data["subtotal"]
+        email_data["email_taxes"] = "$" + data["taxes"]
+        email_data["email_shipping"] = "$" + data["shippingCost"]
+        email_data["email_discount"] = "$" + data["discount"]
+        email_data["email_total"] = "$" + data["total"]
+        email_data["email_paymentmethod"] = data["paymentMethod"]
+        email_data["email_shippingmethod"] = "Flat Rate"
+        email_data["email_notes"] = data["orderNotes"]
+
+        items_sql = """
+                    INSERT INTO `Web_3dprints`.`orders__items`
+                        (`idorders`,
+                        `sku`,
+                        `title`,
+                        `price`,
+                        `qty`,
+                        `customization`)
+                    VALUES
+                        (%s, %s, %s, %s, %s, NULL);
+        """
+        stock_sql = """
+                    INSERT INTO `Web_3dprints`.`stock`
+                        (`sku`,
+                        `swatch_id`,
+                        `qty`)
+                    VALUES
+                        (%s, %s, 0 - %s)
+                    ON DUPLICATE KEY UPDATE    
+                        qty = qty - %s;
+        """
+        history_sql = """
+                    INSERT INTO `Web_3dprints`.`stock`
+                        (`sku`,
+                        `swatch_id`,
+                        `qty`)
+                    VALUES
+                        (%s, %s, 0 - %s)
+                    ON DUPLICATE KEY UPDATE    
+                        qty = qty - %s;
+        """
+        empty_session_sql = (
+            "DELETE FROM Web_3dprints.cart__items WHERE session_id = %s;"
+        )
+
+        for item in cart:
+            item_values = (
+                order_id,
+                item["sku"],
+                item["title"],
+                item["price"],
+                item["quantity"],
+            )
+            product_img = item["img_url"]
+            product_name = item["title"]
+            product_sku = item["sku"]
+            product_quantity = item["quantity"]
+            product_price = "$" + item["price"]
+            cursor.execute(items_sql, item_values)
+            html_email_items = f"""
+                <tr>
+                    <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;padding-bottom:40px">
+                        <!--[if mso]><table style="width:560px" cellpadding="0" cellspacing="0"><tr><td style="width:195px" valign="top"><![endif]-->
+                        <table cellpadding="0" cellspacing="0" class="es-left" align="left"
+                            style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left">
+                            <tr>
+                                <td align="left" class="es-m-p20b" style="padding:0;Margin:0;width:195px">
+                                    <table cellpadding="0" cellspacing="0" width="100%" role="presentation"
+                                        style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
+                                        <tr>
+                                            <td align="center" style="padding:0;Margin:0;font-size:0px"><a target="_blank"
+                                                    href=""
+                                                    style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:underline;color:#6A994E;font-size:16px"><img
+                                                        class="adapt-img p_image"
+                                                        src="{product_img}"
+                                                        alt
+                                                        style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;border-radius:10px"
+                                                        width="195"></a></td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--[if mso]></td><td style="width:20px"></td><td style="width:345px" valign="top"><![endif]-->
+                        <table cellpadding="0" cellspacing="0" class="es-right" align="right"
+                            style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right">
+                            <tr>
+                                <td align="left" style="padding:0;Margin:0;width:345px">
+                                    <table cellpadding="0" cellspacing="0" width="100%"
+                                        style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:separate;border-spacing:0px;border-left:1px solid #386641;border-right:1px solid #386641;border-top:1px solid #386641;border-bottom:1px solid #386641;border-radius:10px"
+                                        role="presentation">
+                                        <tr>
+                                            <td align="left" class="es-m-txt-c"
+                                                style="Margin:0;padding-left:20px;padding-right:20px;padding-top:25px;padding-bottom:25px">
+                                                <h3 class="p_name"
+                                                    style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:Raleway, Arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#386641">
+                                                    {product_name}</h3>
+                                                <p class="p_description"
+                                                    style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;line-height:24px;color:#4D4D4D;font-size:16px">
+                                                    SKU: {product_sku}</p>
+                                                <p
+                                                    style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;line-height:24px;color:#4D4D4D;font-size:16px">
+                                                    QTY:&nbsp;{product_quantity}</p>
+                                                <h3 style="Margin:0;line-height:36px;mso-line-height-rule:exactly;font-family:Raleway, Arial, sans-serif;font-size:24px;font-style:normal;font-weight:normal;color:#386641"
+                                                    class="p_price">{product_price} each</h3>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table><!--[if mso]></td></tr></table><![endif]-->
+                    </td>
+                </tr>
+            """
+            email_data["email_products"] = (
+                email_data["email_products"] + html_email_items
+            )
+            stock_values = (
+                item["baseSKU"],
+                item["colorID"],
+                item["quantity"],
+                item["quantity"],
+            )
+            cursor.execute(stock_sql, stock_values)
+            db.commit()
+        history_sql = """
+            INSERT INTO `Web_3dprints`.`orders__history`
+                (`idorders`,
+                `status_id`,
+                `notes`,
+                `updated_by`)
+            VALUES
+                (%s, %s, %s, 'checkout');
+        """
+        history_values = (
+            order_id,
+            order_status,
+            f"{order_status_name} {data['paymentMethod']} Payment",
+        )
+        cursor.execute(history_sql, history_values)
+        cursor.execute(empty_session_sql, session_id)
+        db.commit()
+        email = generate_email(email_data)
+        send_email(data["emailAddress"], f"Kumpe3D Order {order_id}", email)
+
+        db.close()
+        return (
+            {"response": response, "status_code": 201},
+            201,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
 
 
 class ZipCodes(Resource):
@@ -242,7 +502,7 @@ def build_checkout_data(
         "zip": zip_code,
         "country": country,
         "comments": comments,
-        "email": email
+        "email": email,
     }
 
     cart = get_cart(session_id, user_id)
