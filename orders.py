@@ -80,8 +80,8 @@ class Checkout(Resource):
         )
         self.logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        args = request.args
-        self.logger.debug("Args: %s", args)
+        # args = request.args
+        # self.logger.debug("Args: %s", args)
         json_args = request.get_json(force=True)
         self.logger.debug("JSON ARGS: %s", json_args)
         try:
