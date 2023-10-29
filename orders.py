@@ -263,7 +263,7 @@ class Checkout(Resource):
             product_name = item["title"]
             product_sku = item["sku"]
             product_quantity = item["quantity"]
-            product_price = "$" + item["price"]
+            product_price = "$" + f'{item["price"]}'
             cursor.execute(items_sql, item_values)
             html_email_items = f"""
                 <tr>
