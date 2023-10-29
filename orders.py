@@ -68,7 +68,8 @@ class Checkout(Resource):
 
     def put(self):
         """Finalize Checkout"""
-        self.logger.debug("start finalize checkout (PUT)")
+        logger = logging.getLogger("checkout-final")
+        logger.debug("start finalize checkout (PUT)")
 
         sql_params = Params.SQL
         db = pymysql.connect(
@@ -78,19 +79,19 @@ class Checkout(Resource):
             host=sql_params.server,
             port=3306,
         )
-        self.logger.debug("create cursor")
+        logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         # args = request.args
         # self.logger.debug("Args: %s", args)
-        self.logger.debug(request.json)
+        logger.debug(request.json)
         json_args = request.get_json(force=True)
-        self.logger.debug("JSON ARGS: %s", json_args)
+        logger.debug("JSON ARGS: %s", json_args)
         try:
             data = json_args["checkout_data"]
             session_id = json_args["session_id"]
             cart = data["cart"]
         except KeyError:
-            self.logger.error("One or more parameters missing")
+            logger.error("One or more parameters missing")
             return (
                 {
                     "error": "One or more required paramenters are missing.",
@@ -99,12 +100,12 @@ class Checkout(Resource):
                 422,
                 {"Access-Control-Allow-Origin": "*"},
             )
-        self.logger.debug(session_id)
+        logger.debug(session_id)
 
         try:
             user_id = int(data["customerID"])
         except (KeyError, ValueError):
-            self.logger.warning("user_id missing")
+            logger.warning("user_id missing")
             user_id = 0
 
         orders_sql = """
