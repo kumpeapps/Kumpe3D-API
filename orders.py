@@ -137,7 +137,7 @@ class Checkout(Resource):
                         `taxable_city`,
                         `state_tax`,
                         `county_tax`,
-                        `city_tax`
+                        `city_tax`,
                         `client_ip`,
                         `client_browser`)
                     VALUES
