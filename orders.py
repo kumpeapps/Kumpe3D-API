@@ -368,6 +368,7 @@ class CheckoutFinal(Resource):
         """Return Options for Inflight Browser Request"""
         res = Response()
         res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Accept"] = "application/json"
         res.headers[
             "Access-Control-Allow-Methods"
         ] = "GET, OPTIONS, POST, PUT, PATCH, DELETE"
