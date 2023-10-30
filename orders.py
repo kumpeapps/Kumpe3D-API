@@ -83,7 +83,7 @@ class Checkout(Resource):
         cursor = db.cursor(pymysql.cursors.DictCursor)
         # args = request.args
         # self.logger.debug("Args: %s", args)
-        logger.debug(request.json)
+        logger.debug("get JSON Args")
         json_args = request.get_json(force=True)
         logger.debug("JSON ARGS: %s", json_args)
         try:
@@ -391,7 +391,6 @@ class CheckoutFinal(Resource):
         cursor = db.cursor(pymysql.cursors.DictCursor)
         # args = request.args
         # self.logger.debug("Args: %s", args)
-        logger.debug(request.json)
         json_args = request.get_json(force=True)
         logger.debug("JSON ARGS: %s", json_args)
         try:
