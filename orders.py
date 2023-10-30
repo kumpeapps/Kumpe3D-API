@@ -389,13 +389,13 @@ class CheckoutFinal(Resource):
         )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        # args = request.args
-        # self.logger.debug("Args: %s", args)
+        args = request.args
+        self.logger.debug("Args: %s", args)
         json_args = request.get_json(force=True)
         logger.debug("JSON ARGS: %s", json_args)
         try:
-            data = json_args["checkout_data"]
-            session_id = json_args["session_id"]
+            data = json_args
+            session_id = args["session_id"]
             cart = data["cart"]
         except KeyError:
             logger.error("One or more parameters missing")
