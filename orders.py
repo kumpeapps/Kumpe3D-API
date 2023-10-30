@@ -656,8 +656,13 @@ class CheckoutFinal(Resource):
         cursor.execute(empty_session_sql, session_id)
         db.commit()
         email = generate_email(email_data)
+        email_prefix = ''
+        if Params.app_env == "dev":
+            email_prefix = "[PreProd] "
         if order_status == 3:
-            send_email(data["emailAddress"], f"Kumpe3D Order {order_id}", email)
+            send_email(data["emailAddress"], f"{email_prefix}Kumpe3D Order {order_id}", email)
+        else:
+            send_email("sales@kumpe3d.com", f"{email_prefix}PENDING Kumpe3D Order {order_id}", email)
 
         db.close()
         return (
