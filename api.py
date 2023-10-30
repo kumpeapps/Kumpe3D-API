@@ -6,7 +6,7 @@ from header_data import HeaderData  # pylint: disable=no-name-in-module
 from products import Product, ProductPrice, ProductImages, Filament
 from siteparams import SiteParams
 from cart import Cart
-from orders import Checkout, ZipCodes, Taxes
+from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -34,6 +34,9 @@ api.add_resource(Cart, "/cart")
 
 # Checkout
 api.add_resource(Checkout, "/checkout")
+
+# Checkout
+api.add_resource(CheckoutFinal, "/checkout-final")
 
 # Filament
 api.add_resource(Filament, "/filament")
