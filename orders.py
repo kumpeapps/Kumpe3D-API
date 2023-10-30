@@ -663,7 +663,7 @@ class CheckoutFinal(Resource):
         return (
             {"response": response, "status_code": 201},
             201,
-            {"Access-Control-Allow-Origin": Params.base_url},
+            {"Access-Control-Allow-Origin": "*"},
         )
 
 
