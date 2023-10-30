@@ -144,7 +144,7 @@ class Checkout(Resource):
                         (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
-        if paypal.verify_order(data["ppCaptureID"]):
+        if paypal.verify_order(data["ppTransactionID"]):
             order_status = 3
             order_status_name = "Processed"
         else:
