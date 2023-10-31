@@ -159,7 +159,7 @@ class CheckoutFinal(Resource):
                         (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
                         %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
-        if paypal.verify_order(data["ppCaptureID"]):
+        if paypal.verify_order(data["ppTransactionID"]):
             order_status = 3
             order_status_name = "Processed"
         else:
@@ -208,6 +208,7 @@ class CheckoutFinal(Resource):
         email_data["email_products"] = ""
         email_data["email_name"] = data["firstName"]
         email_data["email_shippingname"] = data["firstName"] + " " + data["lastName"]
+        email_data["email_base_url"] = Params.base_url
         if data["companyName"] != "":
             email_data["email_shippingname"] = (
                 email_data["email_shippingname"] + "<br>" + data["companyName"]
@@ -224,7 +225,7 @@ class CheckoutFinal(Resource):
         email_data["email_country"] = data["country"]
         email_data["email_subtotal"] = "$" + f'{data["subtotal"]}'
         email_data["email_taxes"] = "$" + f'{data["taxes"]}'
-        email_data["email_shipping"] = "$" + f'{data["shippingCost"]}'
+        email_data["email_shippingcost"] = "$" + f'{data["shippingCost"]}'
         email_data["email_discount"] = "$" + f'{data["discount"]}'
         email_data["email_total"] = "$" + f'{data["total"]}'
         email_data["email_paymentmethod"] = data["paymentMethod"]
