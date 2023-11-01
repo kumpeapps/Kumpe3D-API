@@ -7,6 +7,7 @@ from products import Product, ProductPrice, ProductImages, Filament
 from siteparams import SiteParams
 from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
+from shipping import Countries
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -46,6 +47,9 @@ api.add_resource(ZipCodes, "/zipcode")
 
 # Tax Rates
 api.add_resource(Taxes, "/taxes")
+
+# Shipping Countries
+api.add_resource(Countries, "/shipping/countries")
 
 
 if __name__ == "__main__":
