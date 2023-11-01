@@ -365,13 +365,19 @@ class CheckoutFinal(Resource):
         cursor.execute(empty_session_sql, session_id)
         db.commit()
         email = generate_email(email_data)
-        email_prefix = ''
+        email_prefix = ""
         if Params.app_env == "dev":
             email_prefix = "[PreProd] "
         if order_status == 3:
-            send_email(data["emailAddress"], f"{email_prefix}Kumpe3D Order {order_id}", email)
+            send_email(
+                data["emailAddress"], f"{email_prefix}Kumpe3D Order {order_id}", email
+            )
         else:
-            send_email("sales@kumpe3d.com", f"{email_prefix}PENDING Kumpe3D Order {order_id}", email)
+            send_email(
+                "sales@kumpe3d.com",
+                f"{email_prefix}PENDING Kumpe3D Order {order_id}",
+                email,
+            )
 
         db.close()
         return (
@@ -379,7 +385,6 @@ class CheckoutFinal(Resource):
             201,
             {"Access-Control-Allow-Origin": "*"},
         )
-
 
 
 class ZipCodes(Resource):
@@ -541,7 +546,12 @@ def build_checkout_data(
     city_tax = taxes.get("city_tax", 0)
     paypal_transaction_id = args.get("paypal_transaction_id", "")
     tax_total = state_tax + county_tax + city_tax
-    shipping_total = 10
+    if country == "US":
+        shipping_total = 10
+    elif country == "UK":
+        shipping_total = 30
+    else:
+        return
     grand_total = cart["subtotal"] + shipping_total + tax_total
     response = {
         "shippingAddress": shipping_address,
