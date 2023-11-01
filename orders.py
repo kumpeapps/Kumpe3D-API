@@ -548,10 +548,10 @@ def build_checkout_data(
     tax_total = state_tax + county_tax + city_tax
     if country == "US":
         shipping_total = 10
-    elif country == "UK":
-        shipping_total = 30
+    elif country == "CA":
+        shipping_total = 15
     else:
-        return
+        shipping_total = 20
     grand_total = cart["subtotal"] + shipping_total + tax_total
     response = {
         "shippingAddress": shipping_address,
