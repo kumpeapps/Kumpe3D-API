@@ -165,6 +165,8 @@ class CheckoutFinal(Resource):
         else:
             order_status = 2
             order_status_name = "Pending"
+        
+        tax_data = data["taxData"]
 
         orders_values = (
             user_id,
@@ -188,12 +190,12 @@ class CheckoutFinal(Resource):
             data["ppTransactionID"],
             data["ppCaptureID"],
             data["orderNotes"],
-            data["taxData"]["taxable_state"],
-            data["taxData"]["taxable_county"],
-            data["taxData"]["taxable_city"],
-            data["taxData"]["state_tax"],
-            data["taxData"]["county_tax"],
-            data["taxData"]["city_tax"],
+            tax_data.get("taxable_state", None),
+            tax_data.get("taxable_county", None),
+            tax_data.get("taxable_city", None),
+            tax_data.get("state_tax", None),
+            tax_data.get("county_tax", None),
+            tax_data.get("city_tax", None),
             data["client_ip"],
             data["browser"],
         )
