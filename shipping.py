@@ -1,7 +1,7 @@
 """Shipping Functions"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request, Response
+from flask import Response
 from flask_restful import Resource
 import pymysql
 from params import Params
