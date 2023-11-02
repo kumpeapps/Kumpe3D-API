@@ -22,23 +22,20 @@ class Countries(Resource):
         """Return Options for Inflight Browser Request"""
         res = Response()
         res.headers["Access-Control-Allow-Origin"] = "*"
-        res.headers[
-            "Access-Control-Allow-Methods"
-        ] = "GET"
+        res.headers["Access-Control-Allow-Methods"] = "GET"
         return res
 
     def get(self):
         """Country Data"""
         logger.debug("start get cart data")
-        args = request.args
         sql_params = Params.SQL
         db = pymysql.connect(
-                db=sql_params.database,
-                user=sql_params.username,
-                passwd=sql_params.password,
-                host=sql_params.server,
-                port=3306,
-            )
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = """
