@@ -165,7 +165,7 @@ class CheckoutFinal(Resource):
         else:
             order_status = 2
             order_status_name = "Pending"
-        
+
         tax_data = data["taxData"]
 
         orders_values = (
