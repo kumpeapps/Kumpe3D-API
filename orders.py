@@ -243,7 +243,7 @@ class CheckoutFinal(Resource):
                         `qty`,
                         `customization`)
                     VALUES
-                        (%s, %s, %s, %s, %s, NULL);
+                        (%s, %s, %s, %s, %s, '');
         """
         stock_sql = """
                     INSERT INTO `Web_3dprints`.`stock`
