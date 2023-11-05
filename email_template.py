@@ -4,10 +4,10 @@ from params import Params
 
 def generate_email(data: dict):
     """Generate Order Success Email"""
-    if Params.app_env == 'dev':
-        logo_suffix = '-dev'
+    if Params.app_env == "dev":
+        logo_suffix = "-dev"
     else:
-        logo_suffix = ''
+        logo_suffix = ""
 
     html_email = """
         <!DOCTYPE html
@@ -1148,14 +1148,7 @@ def generate_email(data: dict):
                                                                     </tr>
                                                                     <tr>
                                                                         <td align="center" style="padding:0;Margin:0">
-                                                                            <p
-                                                                                style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;line-height:20px;color:#4D4D4D;font-size:13px">
-                                                                                <a target="_blank"
-                                                                                    style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#6A994E;font-size:12px"
-                                                                                    href=""></a><a target="_blank"
-                                                                                    style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;color:#6A994E;font-size:12px"
-                                                                                    href="https://app.termly.io/document/privacy-policy/cb1b4a7a-f0fa-4bb1-a521-c20bd2349dc4">Privacy
-                                                                                    Policy</a></p>
+                                                                            <p style="font-size: 13px;"><a target="_blank" style="text-decoration: none;"></a><a target="_blank" style="text-decoration: none;" href="https://app.termly.io/document/privacy-policy/cb1b4a7a-f0fa-4bb1-a521-c20bd2349dc4">Privacy Policy</a> - <a target="_blank" style="text-decoration: none;"></a><a target="_blank" style="text-decoration: none;" href="https://app.termly.io/document/terms-of-service/bf775aa2-6d29-4ab5-9e30-acf3c40e41a1">Terms of Service</a> - <a target="_blank" style="text-decoration: none;"></a><a target="_blank" style="text-decoration: none;" href="https://app.termly.io/document/shipping-policy/6cbdf94f-dcfa-44b5-b907-c6be976f0529">Shipping Policy</a></p>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -1208,6 +1201,6 @@ def generate_email(data: dict):
 
     for key in data:
         value = data[key]
-        html_email = html_email.replace(key, f'{value}')
-    html_email = html_email.replace('logo_suffix', logo_suffix)
+        html_email = html_email.replace(key, f"{value}")
+    html_email = html_email.replace("logo_suffix", logo_suffix)
     return html_email
