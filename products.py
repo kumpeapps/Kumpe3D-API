@@ -26,7 +26,11 @@ class Product(Resource):
         logger.debug("start get")
         args = request.args
         logger.debug("convert sku to array")
-        sku = helpers.get_sku_array(args["sku"])
+        single_product = args.get("single_product", True)
+        if single_product:
+            sku = helpers.get_sku_array(args["sku"])
+        else:
+            sku = args.get("sku", "%")
         response = get_products(sku)
         response["sku_parts"] = sku
         if response:
@@ -104,13 +108,14 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     return response
 
 
-def get_products(sku: dict, category_filter: str = "%", tag_filter: str = "%"):
+def get_products(sku, category_filter: str = "%", tag_filter: str = "%"):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
         single = False
     else:
         single = True
+        sku = sku['base_sku']
 
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -123,7 +128,7 @@ def get_products(sku: dict, category_filter: str = "%", tag_filter: str = "%"):
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL get_products(%s, %s, %s)"
-    cursor.execute(sql, (sku["base_sku"], category_filter, tag_filter))
+    cursor.execute(sql, (sku, category_filter, tag_filter))
     logger.debug(sql)
     if single:
         response = cursor.fetchone()
