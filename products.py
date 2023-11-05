@@ -31,7 +31,9 @@ class Product(Resource):
             sku = helpers.get_sku_array(args["sku"])
         else:
             sku = args.get("sku", "%")
-        response = get_products(sku)
+        category_filter = args.get("category_filter", "%")
+        tag_filter = args.get("tag_filter", "%")
+        response = get_products(sku, category_filter, tag_filter)
         response["sku_parts"] = sku
         if response:
             return (
