@@ -1,8 +1,14 @@
 """Order Email Template"""
+from params import Params
 
 
 def generate_email(data: dict):
     """Generate Order Success Email"""
+    if Params.app_env == 'dev':
+        logo_suffix = '-dev'
+    else:
+        logo_suffix = ''
+
     html_email = """
         <!DOCTYPE html
             PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -476,7 +482,7 @@ def generate_email(data: dict):
                                                                     <tr>
                                                                         <td align="left" class="es-m-txt-c"
                                                                             style="padding:0;Margin:0;padding-top:5px;padding-bottom:5px;font-size:0px">
-                                                                            <img src="https://api.kumpeapps.com/images/kumpeapps/base_logo_white_background.png"
+                                                                            <img src="https://www.kumpe3d.com/images/logo.png"
                                                                                 alt="Logo"
                                                                                 style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;font-size:12px"
                                                                                 height="45" title="Logo"></td>
@@ -555,7 +561,7 @@ def generate_email(data: dict):
                                                                         <td align="center"
                                                                             style="padding:0;Margin:0;position:relative"><img
                                                                                 class="adapt-img"
-                                                                                src="https://fcfevie.stripocdn.email/content/guids/bannerImgGuid/images/image16967259761608780.png"
+                                                                                src="https://www.kumpe3d.com/images/coverlogo_suffix.jpg"
                                                                                 alt title width="600"
                                                                                 style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
                                                                         </td>
@@ -1203,4 +1209,5 @@ def generate_email(data: dict):
     for key in data:
         value = data[key]
         html_email = html_email.replace(key, f'{value}')
+    html_email = html_email.replace('logo_suffix', logo_suffix)
     return html_email
