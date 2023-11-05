@@ -26,11 +26,9 @@ class Product(Resource):
         logger.debug("start get")
         args = request.args
         logger.debug("convert sku to array")
-        single_product = args.get("single_product", True)
-        if single_product:
+        sku = args.get("sku", "%")
+        if sku != "%":
             sku = helpers.get_sku_array(args["sku"])
-        else:
-            sku = args.get("sku", "%")
         category_filter = args.get("category_filter", "%")
         tag_filter = args.get("tag_filter", "%")
         response = get_products(sku, category_filter, tag_filter)

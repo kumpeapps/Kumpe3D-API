@@ -20,7 +20,6 @@ logging.basicConfig(
 )
 
 
-# TODO:
 class Checkout(Resource):
     """Endpoints for Checkout"""
 
@@ -154,10 +153,11 @@ class CheckoutFinal(Resource):
                         `county_tax`,
                         `city_tax`,
                         `client_ip`,
-                        `client_browser`)
+                        `client_browser`,
+                        `referral`)
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
         if paypal.verify_order(data["ppTransactionID"]):
             order_status = 3
@@ -196,8 +196,9 @@ class CheckoutFinal(Resource):
             tax_data.get("state_tax", None),
             tax_data.get("county_tax", None),
             tax_data.get("city_tax", None),
-            data["client_ip"],
-            data["browser"],
+            data.get("client_ip", None),
+            data.get("browser", None),
+            data.get("referral_code", None),
         )
         cursor.execute(orders_sql, orders_values)
         db.commit()
