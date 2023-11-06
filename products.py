@@ -109,7 +109,7 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     return response
 
 
-def get_products(sku, category_filter: str = "%", tag_filter: str = "%"):
+def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search: str = "%"):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
