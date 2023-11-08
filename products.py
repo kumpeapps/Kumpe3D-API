@@ -219,9 +219,10 @@ class Filament(Resource):
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
         swatch_filter = args.get("swatch_filter", "000")
+        logger.debug(f"Swatch Filter: {swatch_filter}")
         if swatch_filter == "000":
             swatch_filter = "%"
-
+        logger.debug(f"New Swatch Filter: {swatch_filter}")
         sql_params = Params.SQL
         db = pymysql.connect(
             db=sql_params.database,
