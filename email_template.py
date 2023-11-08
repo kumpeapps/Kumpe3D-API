@@ -1030,7 +1030,7 @@ def generate_email(data: dict):
                                                                             <p
                                                                                 style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:tahoma, verdana, segoe, sans-serif;line-height:24px;color:#4D4D4D;font-size:16px">
                                                                                 If the order arrived damaged or not as described
-                                                                                please email us at sales@kumpeapps.com. For damaged items, please keep the package, all packing material, and all items (broken and not broken) until we tell you they are no longer needed. 
+                                                                                please email us at sales@kumpe3d.com. For damaged items, please keep the package, all packing material, and all items (broken and not broken) until we tell you they are no longer needed. 
                                                                                 We will require photos of the package, packaging material, and broken items to be emailed to us to file a claim with the shipping company. All claims must be filed with us within 10 days of reciept of the package.<br><br>
                                                                             </p>
                                                                             <p

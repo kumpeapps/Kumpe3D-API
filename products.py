@@ -222,7 +222,7 @@ class Filament(Resource):
         logger.debug("Swatch Filter: %s", swatch_filter)
         if swatch_filter == "000":
             swatch_filter = "%"
-        logger.debug(f"New Swatch Filter: %s", swatch_filter)
+        logger.debug("New Swatch Filter: %s", swatch_filter)
         sql_params = Params.SQL
         db = pymysql.connect(
             db=sql_params.database,
