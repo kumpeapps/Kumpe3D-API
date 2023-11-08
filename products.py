@@ -218,6 +218,9 @@ class Filament(Resource):
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
+        swatch_filter = args.get("swatch_filter", "000")
+        if swatch_filter == "000":
+            swatch_filter = "%"
 
         sql_params = Params.SQL
         db = pymysql.connect(
@@ -229,8 +232,8 @@ class Filament(Resource):
         )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "CALL get_filament_options(%s, %s);"
-        cursor.execute(sql, (sku["base_sku"], filament_filter))
+        sql = "CALL get_filament_options(%s, %s, %s);"
+        cursor.execute(sql, (sku["base_sku"], filament_filter, swatch_filter))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
