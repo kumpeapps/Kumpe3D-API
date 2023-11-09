@@ -3,6 +3,7 @@ import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
 from flask import request, Response
 from flask_restful import Resource
+from threading import Thread
 import pymysql
 from salestax import Arkansas as ar
 from params import Params
@@ -387,7 +388,7 @@ class CheckoutFinal(Resource):
             )
 
         db.close()
-        notif.new_order(order_id)
+        Thread(target=notif.new_order(order_id)).start()
         return (
             {"response": response, "status_code": 201},
             201,
