@@ -1,6 +1,7 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
+from multiprocessing import Process
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
@@ -280,7 +281,7 @@ class CheckoutFinal(Resource):
                 item["title"],
                 item["price"],
                 item["quantity"],
-                get_product_costs(item['sku']),
+                get_product_costs(item["sku"]),
             )
             product_img = item["img_url"]
             product_name = item["title"]
@@ -376,17 +377,30 @@ class CheckoutFinal(Resource):
         if Params.app_env == "dev":
             email_prefix = "[PreProd] "
         if order_status == 3:
-            send_email(
-                data["emailAddress"], f"{email_prefix}Kumpe3D Order {order_id}", email
+            email_thread = Process(
+                target=send_email,
+                args=(
+                    data["emailAddress"],
+                    f"{email_prefix}Kumpe3D Order {order_id}",
+                    email,
+                ),
             )
         else:
-            send_email(
-                "sales@kumpe3d.com",
-                f"{email_prefix}PENDING Kumpe3D Order {order_id}",
-                email,
+            email_thread = Process(
+                target=send_email,
+                args=(
+                    "sales@kumpe3d.com",
+                    f"{email_prefix}PENDING Kumpe3D Order {order_id}",
+                    email,
+                ),
             )
+        email_thread.daemon = True
+        email_thread.start()
 
         db.close()
+        notif_thread = Process(target=notif.new_order, args=(order_id,))
+        notif_thread.daemon = True
+        notif_thread.start()
         return (
             {"response": response, "status_code": 201},
             201,
