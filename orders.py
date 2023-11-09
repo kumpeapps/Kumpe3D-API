@@ -12,6 +12,7 @@ from email_template import generate_email
 import paypal
 from send_email import send_email
 from costs import get_product_costs
+import notif
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -386,6 +387,7 @@ class CheckoutFinal(Resource):
             )
 
         db.close()
+        notif.new_order(order_id)
         return (
             {"response": response, "status_code": 201},
             201,
