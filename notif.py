@@ -14,7 +14,8 @@ def new_order(order_number: int):
         "user": Params.Pushover.orders_group,
         "title": f"New Kumpe3D Order {order_number}",
         "message": f"A new order has been submitted. The order number is {order_number}.",
+        "url": f"{Params.base_url}/packing_slip?order_id={order_number}",
         "sound": "aol"
     }), { "Content-type": "application/x-www-form-urlencoded" })
     conn.getresponse()
-new_order("0")
+new_order("32")
