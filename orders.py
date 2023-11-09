@@ -11,6 +11,7 @@ from cart import get_cart
 from email_template import generate_email
 import paypal
 from send_email import send_email
+from costs import get_product_costs
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -242,9 +243,10 @@ class CheckoutFinal(Resource):
                         `title`,
                         `price`,
                         `qty`,
+                        `cost`,
                         `customization`)
                     VALUES
-                        (%s, %s, %s, %s, %s, '');
+                        (%s, %s, %s, %s, %s, %s, '');
         """
         stock_sql = """
                     INSERT INTO `Web_3dprints`.`stock`
@@ -277,6 +279,7 @@ class CheckoutFinal(Resource):
                 item["title"],
                 item["price"],
                 item["quantity"],
+                get_product_costs(item['sku']),
             )
             product_img = item["img_url"]
             product_name = item["title"]
