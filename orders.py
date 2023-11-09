@@ -1,8 +1,6 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from threading import Thread
-from contextlib import contextmanager
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
@@ -84,8 +82,7 @@ class CheckoutFinal(Resource):
             "Access-Control-Allow-Methods"
         ] = "GET, OPTIONS, POST, PUT, PATCH, DELETE"
         return res
-    
-    @contextmanager
+
     def post(self):
         """Finalize Checkout"""
         logger = logging.getLogger("checkout-final")
@@ -390,12 +387,11 @@ class CheckoutFinal(Resource):
             )
 
         db.close()
-        yield (
+        return (
             {"response": response, "status_code": 201},
             201,
             {"Access-Control-Allow-Origin": "*"},
         )
-        Thread(target=notif.new_order(order_id)).start()
 
 
 class ZipCodes(Resource):
