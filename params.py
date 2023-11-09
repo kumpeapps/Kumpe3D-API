@@ -1,9 +1,9 @@
 """Parameters file for Kumpe3D API"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import os
+import logging
 from dotenv import load_dotenv
 import infisical
-import logging
 
 
 load_dotenv()
