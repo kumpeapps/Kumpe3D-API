@@ -8,6 +8,7 @@ from params import Params
 
 def new_order(order_number: int):
     """Send New Order Notification"""
+    packing_slip = get_packing_slip(order_number)
     conn = http.client.HTTPSConnection(Params.Pushover.server)
     conn.request(
         "POST",
@@ -17,7 +18,7 @@ def new_order(order_number: int):
                 "token": Params.Pushover.apikey,
                 "user": Params.Pushover.orders_group,
                 "title": f"New Kumpe3D Order {order_number}",
-                "message": get_packing_slip(order_number),
+                "message": packing_slip,
                 "url": f"{Params.base_url}/packing_slip?order_id={order_number}",
                 "html": 1,
                 "url_title": "View Packing Slip",
