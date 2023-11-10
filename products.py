@@ -26,9 +26,14 @@ class Product(Resource):
         logger.debug("start get")
         args = request.args
         logger.debug("convert sku to array")
-        sku = helpers.get_sku_array(args["sku"])
-        response = get_products(sku)
-        response["sku_parts"] = sku
+        sku = args.get("sku", "%")
+        if sku != "%":
+            sku = helpers.get_sku_array(args["sku"])
+        category_filter = args.get("category_filter", "%")
+        tag_filter = args.get("tag_filter", "%")
+        response = get_products(sku, category_filter, tag_filter)
+        if sku != '%':
+            response["sku_parts"] = sku
         if response:
             return (
                 {"response": response, "status_code": 200},
@@ -104,13 +109,14 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     return response
 
 
-def get_products(sku: dict, category_filter: str = "%", tag_filter: str = "%"):
+def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search: str = "%"):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
         single = False
     else:
         single = True
+        sku = sku['base_sku']
 
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -122,8 +128,8 @@ def get_products(sku: dict, category_filter: str = "%", tag_filter: str = "%"):
     )
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
-    sql = "CALL get_products(%s, %s, %s)"
-    cursor.execute(sql, (sku["base_sku"], category_filter, tag_filter))
+    sql = "CALL get_products(%s, %s, %s, %s)"
+    cursor.execute(sql, (sku, category_filter, tag_filter, search))
     logger.debug(sql)
     if single:
         response = cursor.fetchone()
@@ -212,7 +218,11 @@ class Filament(Resource):
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
-
+        swatch_filter = args.get("swatch_filter", "000")
+        logger.debug("Swatch Filter: %s", swatch_filter)
+        if swatch_filter == "000":
+            swatch_filter = "%"
+        logger.debug("New Swatch Filter: %s", swatch_filter)
         sql_params = Params.SQL
         db = pymysql.connect(
             db=sql_params.database,
@@ -223,8 +233,8 @@ class Filament(Resource):
         )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        sql = "CALL get_filament_options(%s, %s);"
-        cursor.execute(sql, (sku["base_sku"], filament_filter))
+        sql = "CALL get_filament_options(%s, %s, %s);"
+        cursor.execute(sql, (sku["base_sku"], filament_filter, swatch_filter))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()

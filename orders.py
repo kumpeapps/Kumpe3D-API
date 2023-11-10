@@ -1,6 +1,7 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
+from multiprocessing import Process
 from flask import request, Response
 from flask_restful import Resource
 import pymysql
@@ -11,6 +12,8 @@ from cart import get_cart
 from email_template import generate_email
 import paypal
 from send_email import send_email
+from costs import get_product_costs
+import notif
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -20,7 +23,6 @@ logging.basicConfig(
 )
 
 
-# TODO:
 class Checkout(Resource):
     """Endpoints for Checkout"""
 
@@ -154,10 +156,11 @@ class CheckoutFinal(Resource):
                         `county_tax`,
                         `city_tax`,
                         `client_ip`,
-                        `client_browser`)
+                        `client_browser`,
+                        `referral`)
                     VALUES
                         (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
-                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
+                        %s, %s, now(), %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);
         """
         if paypal.verify_order(data["ppTransactionID"]):
             order_status = 3
@@ -196,8 +199,9 @@ class CheckoutFinal(Resource):
             tax_data.get("state_tax", None),
             tax_data.get("county_tax", None),
             tax_data.get("city_tax", None),
-            data["client_ip"],
-            data["browser"],
+            data.get("client_ip", None),
+            data.get("browser", None),
+            data.get("referral_code", None),
         )
         cursor.execute(orders_sql, orders_values)
         db.commit()
@@ -241,9 +245,10 @@ class CheckoutFinal(Resource):
                         `title`,
                         `price`,
                         `qty`,
+                        `cost`,
                         `customization`)
                     VALUES
-                        (%s, %s, %s, %s, %s, '');
+                        (%s, %s, %s, %s, %s, %s, '');
         """
         stock_sql = """
                     INSERT INTO `Web_3dprints`.`stock`
@@ -276,6 +281,7 @@ class CheckoutFinal(Resource):
                 item["title"],
                 item["price"],
                 item["quantity"],
+                get_product_costs(item["sku"]),
             )
             product_img = item["img_url"]
             product_name = item["title"]
@@ -371,17 +377,30 @@ class CheckoutFinal(Resource):
         if Params.app_env == "dev":
             email_prefix = "[PreProd] "
         if order_status == 3:
-            send_email(
-                data["emailAddress"], f"{email_prefix}Kumpe3D Order {order_id}", email
+            email_thread = Process(
+                target=send_email,
+                args=(
+                    data["emailAddress"],
+                    f"{email_prefix}Kumpe3D Order {order_id}",
+                    email,
+                ),
             )
         else:
-            send_email(
-                "sales@kumpe3d.com",
-                f"{email_prefix}PENDING Kumpe3D Order {order_id}",
-                email,
+            email_thread = Process(
+                target=send_email,
+                args=(
+                    "sales@kumpe3d.com",
+                    f"{email_prefix}PENDING Kumpe3D Order {order_id}",
+                    email,
+                ),
             )
+        email_thread.daemon = True
+        email_thread.start()
 
         db.close()
+        notif_thread = Process(target=notif.new_order, args=(order_id,))
+        notif_thread.daemon = True
+        notif_thread.start()
         return (
             {"response": response, "status_code": 201},
             201,
