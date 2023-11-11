@@ -105,6 +105,7 @@ class CheckoutFinal(Resource):
         logger.debug("JSON ARGS: %s", json_args)
         try:
             data = json_args
+            logger.debug("Cart: %s", data)
             session_id = args["session_id"]
             cart = data["cart"]
         except KeyError:
