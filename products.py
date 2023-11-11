@@ -116,7 +116,7 @@ def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search:
         single = False
     else:
         single = True
-        sku = sku['base_sku']
+        sku = sku['sku']
 
     sql_params = Params.SQL
     db = pymysql.connect(
