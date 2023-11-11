@@ -60,6 +60,9 @@ def get_product_costs(sku: str) -> float:
     product = cursor.fetchone()
     cursor.close()
     db.close()
-    filament_cost = get_filament_cost(product["filament_usage"], swatch_id)
+    try:
+        filament_cost = get_filament_cost(product["filament_usage"], swatch_id)
+    except TypeError:
+        filament_cost = 0
     product_cost = product["addl_cost"] + filament_cost
     return round(product_cost, 2)
