@@ -170,7 +170,7 @@ class ProductImages(Resource):
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM Web_3dprints.product_photos WHERE sku = %s;"
-        cursor.execute(sql, (sku["base_sku"]))
+        cursor.execute(sql, (sku["sku"]))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
