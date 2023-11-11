@@ -34,9 +34,8 @@ def get_filament_cost(grams: int, swatch_id: str) -> float:
     return round(filament_cost, 3)
 
 
-def get_product_costs(sku: str) -> float:
+def get_product_costs(sku: str, query_sku: str) -> float:
     """Get Product Costs"""
-    base_sku = sku[:11]
     swatch_id = sku[-3:]
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -56,7 +55,7 @@ def get_product_costs(sku: str) -> float:
         WHERE 1=1
             AND sku = %s;
     """
-    cursor.execute(sql, (base_sku))
+    cursor.execute(sql, (query_sku))
     product = cursor.fetchone()
     cursor.close()
     db.close()

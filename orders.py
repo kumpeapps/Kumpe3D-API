@@ -281,7 +281,7 @@ class CheckoutFinal(Resource):
                 item["title"],
                 item["price"],
                 item["quantity"],
-                get_product_costs(item["sku"]),
+                get_product_costs(item["query_sku"]),
             )
             product_img = item["img_url"]
             product_name = item["title"]
