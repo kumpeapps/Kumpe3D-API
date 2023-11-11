@@ -99,7 +99,7 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL Web_3dprints.get_product_price(%s, %s);"
-    cursor.execute(sql, (sku["base_sku"], quantity))
+    cursor.execute(sql, (sku["sku"], quantity))
     logger.debug(sql)
     logger.debug("Get Product Pricing")
     response = cursor.fetchone()
