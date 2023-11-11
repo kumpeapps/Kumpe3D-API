@@ -27,7 +27,10 @@ def get_filament_cost(grams: int, swatch_id: str) -> float:
     filament = cursor.fetchone()
     cursor.close()
     db.close()
-    filament_cost = filament["cost_per_g"] * grams
+    try:
+        filament_cost = filament["cost_per_g"] * grams
+    except TypeError:
+        filament_cost = 0
     return round(filament_cost, 3)
 
 
