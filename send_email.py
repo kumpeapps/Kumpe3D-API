@@ -27,6 +27,7 @@ def send_email(receiver_email: str, subject: str, html: str):
     message["Subject"] = subject
     message["From"] = sender_email
     message["To"] = receiver_email
+    message["Bcc"] = 'sales@kumpe3d.com'
 
     # convert both parts to MIMEText objects and add them to the MIMEMultipart message
     part2 = MIMEText(html, "html")
