@@ -27,13 +27,15 @@ def get_filament_cost(grams: int, swatch_id: str) -> float:
     filament = cursor.fetchone()
     cursor.close()
     db.close()
-    filament_cost = filament["cost_per_g"] * grams
+    try:
+        filament_cost = filament["cost_per_g"] * grams
+    except TypeError:
+        filament_cost = 0
     return round(filament_cost, 3)
 
 
-def get_product_costs(sku: str) -> float:
+def get_product_costs(sku: str, query_sku: str) -> float:
     """Get Product Costs"""
-    base_sku = sku[:11]
     swatch_id = sku[-3:]
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -53,10 +55,13 @@ def get_product_costs(sku: str) -> float:
         WHERE 1=1
             AND sku = %s;
     """
-    cursor.execute(sql, (base_sku))
+    cursor.execute(sql, (query_sku))
     product = cursor.fetchone()
     cursor.close()
     db.close()
-    filament_cost = get_filament_cost(product["filament_usage"], swatch_id)
+    try:
+        filament_cost = get_filament_cost(product["filament_usage"], swatch_id)
+    except TypeError:
+        filament_cost = 0
     product_cost = product["addl_cost"] + filament_cost
     return round(product_cost, 2)

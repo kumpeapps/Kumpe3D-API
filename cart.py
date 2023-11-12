@@ -68,6 +68,7 @@ class Cart(Resource):
         custom = json_args.get("customization", "")
         try:
             sku = json_args["sku"]
+            query_sku = json_args.get("query_sku", sku)
         except KeyError:
             logger.error("sku missing")
             return (
@@ -109,12 +110,13 @@ class Cart(Resource):
                     (`session_id`,
                     `user_id`,
                     `sku`,
+                    `query_sku`,
                     `quantity`,
                     `customization`)
                 VALUES
-                    (%s, %s, %s, %s, %s)
+                    (%s, %s, %s, %s, %s, %s)
                 ON DUPLICATE KEY UPDATE quantity = quantity + %s;"""
-        cursor.execute(sql, (session_id, user_id, sku, qty, custom, qty))
+        cursor.execute(sql, (session_id, user_id, sku, query_sku, qty, custom, qty))
         logger.debug(sql)
         db.commit()
         cursor.close()

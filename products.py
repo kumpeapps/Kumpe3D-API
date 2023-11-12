@@ -99,7 +99,7 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL Web_3dprints.get_product_price(%s, %s);"
-    cursor.execute(sql, (sku["base_sku"], quantity))
+    cursor.execute(sql, (sku["sku"], quantity))
     logger.debug(sql)
     logger.debug("Get Product Pricing")
     response = cursor.fetchone()
@@ -116,7 +116,7 @@ def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search:
         single = False
     else:
         single = True
-        sku = sku['base_sku']
+        sku = sku['sku']
 
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -170,7 +170,7 @@ class ProductImages(Resource):
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = "SELECT * FROM Web_3dprints.product_photos WHERE sku = %s;"
-        cursor.execute(sql, (sku["base_sku"]))
+        cursor.execute(sql, (sku["sku"]))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
