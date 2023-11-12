@@ -105,9 +105,9 @@ class CheckoutFinal(Resource):
         logger.debug("JSON ARGS: %s", json_args)
         try:
             data = json_args
-            logger.debug("Cart: %s", data)
             session_id = args["session_id"]
             cart = data["cart"]
+            logger.debug("Cart: %s", cart)
         except KeyError:
             logger.error("One or more parameters missing")
             return (
@@ -282,7 +282,7 @@ class CheckoutFinal(Resource):
                 item["title"],
                 item["price"],
                 item["quantity"],
-                get_product_costs(item["query_sku"]),
+                get_product_costs(item["sku"], item["query_sku"]),
             )
             product_img = item["img_url"]
             product_name = item["title"]
