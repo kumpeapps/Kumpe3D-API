@@ -518,14 +518,20 @@ def get_taxes(
     if response["is_state_taxable"]:
         state_tax = subtotal * helpers.percent_to_float(response["state_tax_rate"])
         response["state_tax"] = round(state_tax, 2)
+    else:
+        response["state_tax"] = 0
 
     if response["is_city_taxable"]:
         city_tax = subtotal * helpers.percent_to_float(response["city_tax_rate"])
         response["city_tax"] = round(city_tax, 2)
+    else:
+        response["city_tax"] = 0
 
     if response["is_county_taxable"]:
         county_tax = subtotal * helpers.percent_to_float(response["county_tax_rate"])
         response["county_tax"] = round(county_tax, 2)
+    else:
+        response["county_tax"] = 0
 
     return response
 
