@@ -569,6 +569,10 @@ def build_checkout_data(
     paypal_transaction_id = args.get("paypal_transaction_id", "")
     tax_total = state_tax + county_tax + city_tax
     tax_total = round(tax_total, 2)
+    try:
+        tax_total = float(tax_total)
+    except TypeError:
+        tax_total = 0
     if country == "US":
         shipping_total = 10
     elif country == "CA":
