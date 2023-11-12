@@ -375,8 +375,6 @@ class CheckoutFinal(Resource):
         db.commit()
         email = generate_email(email_data)
         email_prefix = ""
-        if Params.app_env == "dev":
-            email_prefix = "[PreProd] "
         if order_status == 3:
             email_thread = Process(
                 target=send_email,
