@@ -310,16 +310,17 @@ def refresh_session(session_id: str, user_id: int):
     db.commit()
     db.close()
 
+
 def get_cart(session_id: str, user_id: int, refresh: bool = True) -> dict:
     """Get Shopping Cart"""
     sql_params = Params.SQL
     db = pymysql.connect(
-            db=sql_params.database,
-            user=sql_params.username,
-            passwd=sql_params.password,
-            host=sql_params.server,
-            port=3306,
-        )
+        db=sql_params.database,
+        user=sql_params.username,
+        passwd=sql_params.password,
+        host=sql_params.server,
+        port=3306,
+    )
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = """SELECT
