@@ -8,6 +8,7 @@ from siteparams import SiteParams
 from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 from shipping import Countries
+import shippo
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -50,6 +51,9 @@ api.add_resource(Taxes, "/taxes")
 
 # Shipping Countries
 api.add_resource(Countries, "/shipping/countries")
+
+# Shippo Webhook
+api.add_resource(shippo.ShippoWebhook, "/webhook-shippo")
 
 
 if __name__ == "__main__":
