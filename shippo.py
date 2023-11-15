@@ -30,6 +30,7 @@ class ShippoWebhook(Resource):
 
     def post(self):
         """ShippoWebhook Post"""
+        logger.debug("Start ShippoWebhook POST")
         json_args = request.get_json(force=True)
         # Serializing json
         json_object = json.dumps(json_args, indent=4)
