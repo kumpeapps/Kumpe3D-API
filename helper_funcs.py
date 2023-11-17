@@ -23,6 +23,7 @@ def get_sku_array(sku):
         sku_array["filament_type"] = sku_array["options"][0]
         sku_array["layer_quality"] = sku_array["options"][1]
         sku_array["size"] = sku_array["options"][2]
+        sku_array['search_sku'] = sku
         return sku_array
     except IndexError:
         return {
