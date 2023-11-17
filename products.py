@@ -236,7 +236,7 @@ class Filament(Resource):
         sql = "CALL get_filament_options(%s, %s, %s);"
         cursor.execute(sql, (sku["search_sku"], filament_filter, swatch_filter))
         logger.debug(sql)
-        logger.debug("Params: %s, %s, %s", (sku["search_sku"], filament_filter, swatch_filter))
+        logger.debug("Params: %s, %s, %s", sku["search_sku"], filament_filter, swatch_filter)
         response = cursor.fetchall()
         cursor.close()
         db.close()
