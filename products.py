@@ -246,3 +246,55 @@ class Filament(Resource):
             200,
             {"Access-Control-Allow-Origin": Params.base_url},
         )
+
+
+class Categories(Resource):
+    """Category Functions"""
+    logging.basicConfig(
+        filename="kumpe3d-api.log",
+        filemode="a",
+        format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
+        level=Params.log_level(),
+    )
+    logger = logging.getLogger("categories")
+
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return res
+
+    def get(self) -> list:
+        """Get Categories"""
+        logger.debug("start get categories")
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT 
+                `name`,
+                `order`
+            FROM
+                Web_3dprints.categories
+            WHERE 1 = 1 
+                AND is_active = 1;
+        """
+        cursor.execute(sql)
+        logger.debug(sql)
+        response = cursor.fetchall()
+        cursor.close()
+        db.close()
+        logger.debug(response)
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
