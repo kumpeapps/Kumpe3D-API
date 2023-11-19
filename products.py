@@ -140,7 +140,7 @@ def get_products(
     cursor.execute(
         sql, (sku, f"%{category_filter}%", tag_filter, search, f"%{catalog_filter}%")
     )
-    logger.debug(sql)
+    logger.debug(sql, f"%{category_filter}%", tag_filter, search, f"%{catalog_filter}%")
     if single:
         response = cursor.fetchone()
     else:
