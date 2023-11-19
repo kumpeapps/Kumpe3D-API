@@ -281,7 +281,8 @@ class Categories(Resource):
         sql = """
             SELECT 
                 `name`,
-                `order`
+                `order`,
+                `category`
             FROM
                 Web_3dprints.categories
             WHERE 1 = 1 
