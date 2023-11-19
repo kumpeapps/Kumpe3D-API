@@ -32,7 +32,7 @@ class Product(Resource):
         category_filter = args.get("category_filter", "%")
         tag_filter = args.get("tag_filter", "%")
         catalog_filter = args.get("catalog", "%")
-        response = get_products(sku, category_filter, tag_filter, catalog_filter)
+        response = get_products(sku, category_filter, tag_filter, "%", catalog_filter)
         if sku != "%":
             response["sku_parts"] = sku
         if response:
