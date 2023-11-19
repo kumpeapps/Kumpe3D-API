@@ -31,8 +31,9 @@ class Product(Resource):
             sku = helpers.get_sku_array(args["sku"])
         category_filter = args.get("category_filter", "%")
         tag_filter = args.get("tag_filter", "%")
-        response = get_products(sku, category_filter, tag_filter)
-        if sku != '%':
+        catalog_filter = args.get("catalog", "%")
+        response = get_products(sku, category_filter, tag_filter, catalog_filter)
+        if sku != "%":
             response["sku_parts"] = sku
         if response:
             return (
@@ -109,14 +110,20 @@ def get_product_pricing(sku: dict, quantity: int) -> dict:
     return response
 
 
-def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search: str = "%"):
+def get_products(
+    sku,
+    category_filter: str = "%",
+    tag_filter: str = "%",
+    search: str = "%",
+    catalog_filter: str = "%",
+):
     """Get Product Data"""
     logger.debug("start get product data")
     if sku == "%":
         single = False
     else:
         single = True
-        sku = sku['sku']
+        sku = sku["sku"]
 
     sql_params = Params.SQL
     db = pymysql.connect(
@@ -128,8 +135,8 @@ def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search:
     )
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
-    sql = "CALL get_products(%s, %s, %s, %s)"
-    cursor.execute(sql, (sku, f"%{category_filter}%", tag_filter, search))
+    sql = "CALL get_products_by_catalog(%s, %s, %s, %s, %s)"
+    cursor.execute(sql, (sku, f"%{category_filter}%", tag_filter, search, catalog_filter))
     logger.debug(sql)
     if single:
         response = cursor.fetchone()
@@ -220,7 +227,7 @@ class Filament(Resource):
                 422,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
-        swatch_filter = args.get("swatch_filter", sku['color'])
+        swatch_filter = args.get("swatch_filter", sku["color"])
         logger.debug("Swatch Filter: %s", swatch_filter)
         if swatch_filter == "000":
             swatch_filter = "%"
@@ -238,7 +245,9 @@ class Filament(Resource):
         sql = "CALL get_filament_options(%s, %s, %s);"
         cursor.execute(sql, (sku["search_sku"], filament_filter, swatch_filter))
         logger.debug(sql)
-        logger.debug("Params: %s, %s, %s", sku["search_sku"], filament_filter, swatch_filter)
+        logger.debug(
+            "Params: %s, %s, %s", sku["search_sku"], filament_filter, swatch_filter
+        )
         response = cursor.fetchall()
         cursor.close()
         db.close()
@@ -252,6 +261,7 @@ class Filament(Resource):
 
 class Categories(Resource):
     """Category Functions"""
+
     logging.basicConfig(
         filename="kumpe3d-api.log",
         filemode="a",
