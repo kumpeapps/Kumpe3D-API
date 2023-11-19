@@ -136,7 +136,9 @@ def get_products(
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL get_products_by_catalog(%s, %s, %s, %s, %s)"
-    cursor.execute(sql, (sku, f"%{category_filter}%", tag_filter, search, catalog_filter))
+    cursor.execute(
+        sql, (sku, f"%{category_filter}%", tag_filter, search, catalog_filter)
+    )
     logger.debug(sql)
     if single:
         response = cursor.fetchone()
@@ -305,6 +307,61 @@ class Categories(Resource):
             ORDER BY `sort_order`;
         """
         cursor.execute(sql, (catalog, "%"))
+        logger.debug(sql)
+        response = cursor.fetchall()
+        cursor.close()
+        db.close()
+        logger.debug(response)
+        return (
+            {"response": response, "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": Params.base_url},
+        )
+
+
+class Catalogs(Resource):
+    """Catalog Functions"""
+
+    logging.basicConfig(
+        filename="kumpe3d-api.log",
+        filemode="a",
+        format="%(asctime)s: [%(name)s] [%(levelname)s] %(message)s",
+        level=Params.log_level(),
+    )
+    logger = logging.getLogger("catalogs")
+
+    def options(self):
+        """Return Options for Inflight Browser Request"""
+        res = Response()
+        res.headers["Access-Control-Allow-Origin"] = "*"
+        res.headers["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+        return res
+
+    def get(self) -> list:
+        """Get Catalogs"""
+        logger.debug("start get catalogs")
+        args = request.args
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        logger.debug("create cursor")
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = """
+            SELECT 
+                `name`,
+                `catalog`
+            FROM
+                Web_3dprints.catalogs
+            WHERE 1 = 1 
+                AND is_active = 1
+            ORDER BY sort_order;
+        """
+        cursor.execute(sql)
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
