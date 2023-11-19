@@ -285,7 +285,8 @@ class Categories(Resource):
             FROM
                 Web_3dprints.categories
             WHERE 1 = 1 
-                AND is_active = 1;
+                AND is_active = 1
+            ORDER BY order;
         """
         cursor.execute(sql)
         logger.debug(sql)
