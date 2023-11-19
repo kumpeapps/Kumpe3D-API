@@ -136,8 +136,9 @@ def get_products(
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL get_products_by_catalog(%s, %s, %s, %s, %s)"
+    logger.debug("CatalogFilter: %s", catalog_filter)
     cursor.execute(
-        sql, (sku, f"%{category_filter}%", tag_filter, search, catalog_filter)
+        sql, (sku, f"%{category_filter}%", tag_filter, search, f"%{catalog_filter}%")
     )
     logger.debug(sql)
     if single:
