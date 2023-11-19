@@ -42,8 +42,8 @@ class Product(Resource):
             )
         else:
             return (
-                {"response": response, "status_code": 204},
-                204,
+                {"response": [], "status_code": 200},
+                200,
                 {"Access-Control-Allow-Origin": Params.base_url},
             )
 
