@@ -304,7 +304,7 @@ class Categories(Resource):
                 AND (catalogs like %s OR category = '%')
             ORDER BY `sort_order`;
         """
-        cursor.execute(sql, catalog)
+        cursor.execute(sql, (catalog))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
