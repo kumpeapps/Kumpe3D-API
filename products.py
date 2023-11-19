@@ -129,7 +129,7 @@ def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search:
     logger.debug("create cursor")
     cursor = db.cursor(pymysql.cursors.DictCursor)
     sql = "CALL get_products(%s, %s, %s, %s)"
-    cursor.execute(sql, (sku, category_filter, tag_filter, search))
+    cursor.execute(sql, (sku, f"%{category_filter}%", tag_filter, search))
     logger.debug(sql)
     if single:
         response = cursor.fetchone()
