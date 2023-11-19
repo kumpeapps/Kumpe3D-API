@@ -8,7 +8,7 @@ from siteparams import SiteParams
 from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 from shipping import Countries
-import shippo_functions
+# import shippo_functions
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
