@@ -301,10 +301,10 @@ class Categories(Resource):
                 Web_3dprints.categories
             WHERE 1 = 1 
                 AND is_active = 1
-                AND (catalogs like %s OR category = '%')
+                AND (catalogs like %s OR category = %s)
             ORDER BY `sort_order`;
         """
-        cursor.execute(sql, (catalog))
+        cursor.execute(sql, (catalog, "%"))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
