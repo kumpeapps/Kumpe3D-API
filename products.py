@@ -283,13 +283,13 @@ class Categories(Resource):
         sql = """
             SELECT 
                 `name`,
-                `order`,
+                `sort_order`,
                 `category`
             FROM
                 Web_3dprints.categories
             WHERE 1 = 1 
                 AND is_active = 1
-            ORDER BY `order`;
+            ORDER BY `sort_order`;
         """
         cursor.execute(sql)
         logger.debug(sql)
