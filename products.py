@@ -138,6 +138,8 @@ def get_products(sku, category_filter: str = "%", tag_filter: str = "%", search:
     cursor.close()
     db.close()
     logger.debug(response)
+    if response is None:
+        response = []
     return response
 
 
