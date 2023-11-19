@@ -270,6 +270,7 @@ class Categories(Resource):
     def get(self) -> list:
         """Get Categories"""
         logger.debug("start get categories")
+        args = request.args
         sql_params = Params.SQL
         db = pymysql.connect(
             db=sql_params.database,
@@ -279,6 +280,7 @@ class Categories(Resource):
             port=3306,
         )
         logger.debug("create cursor")
+        catalog = args.get("catalog", "%")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = """
             SELECT 
@@ -289,9 +291,10 @@ class Categories(Resource):
                 Web_3dprints.categories
             WHERE 1 = 1 
                 AND is_active = 1
+                AND (catalogs like '%,%s,%' OR category = '%')
             ORDER BY `sort_order`;
         """
-        cursor.execute(sql)
+        cursor.execute(sql, catalog)
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
