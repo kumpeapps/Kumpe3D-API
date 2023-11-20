@@ -294,6 +294,7 @@ class Categories(Resource):
         )
         logger.debug("create cursor")
         catalog = args.get("catalog", "%")
+        ignore_category = args.get("ignore_category", "")
         cursor = db.cursor(pymysql.cursors.DictCursor)
         sql = """
             SELECT 
@@ -305,9 +306,10 @@ class Categories(Resource):
             WHERE 1 = 1 
                 AND is_active = 1
                 AND (catalogs like %s OR category = %s)
+                AND category != %s
             ORDER BY `sort_order`;
         """
-        cursor.execute(sql, (catalog, "%"))
+        cursor.execute(sql, (catalog, "%", ignore_category))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
@@ -352,6 +354,7 @@ class Catalogs(Resource):
         )
         logger.debug("create cursor")
         cursor = db.cursor(pymysql.cursors.DictCursor)
+        ignore_catalog = args.get("ignore_catalog", "")
         sql = """
             SELECT 
                 `name`,
@@ -360,9 +363,10 @@ class Catalogs(Resource):
                 Web_3dprints.catalogs
             WHERE 1 = 1 
                 AND is_active = 1
+                AND catalog != %s
             ORDER BY sort_order;
         """
-        cursor.execute(sql)
+        cursor.execute(sql, (ignore_catalog))
         logger.debug(sql)
         response = cursor.fetchall()
         cursor.close()
