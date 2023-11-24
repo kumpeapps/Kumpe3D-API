@@ -300,9 +300,10 @@ class Categories(Resource):
             SELECT 
                 `name`,
                 `sort_order`,
-                `category`
+                `category`,
+                `photo`
             FROM
-                Web_3dprints.categories
+                Web_3dprints.vw_categories
             WHERE 1 = 1 
                 AND is_active = 1
                 AND (catalogs like %s OR category = %s)
