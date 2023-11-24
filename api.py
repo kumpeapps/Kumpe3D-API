@@ -3,11 +3,12 @@ import setup  # pylint: disable=unused-import, wrong-import-order
 from flask import Flask
 from flask_restful import Api
 from header_data import HeaderData  # pylint: disable=no-name-in-module
-from products import Product, ProductPrice, ProductImages, Filament
+from products import Product, ProductPrice, ProductImages, Filament, Categories, Catalogs
 from siteparams import SiteParams
 from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 from shipping import Countries
+# import shippo_functions
 
 # from flask_restful import Resource, Api, reqparse
 # import pandas as pd
@@ -50,6 +51,15 @@ api.add_resource(Taxes, "/taxes")
 
 # Shipping Countries
 api.add_resource(Countries, "/shipping/countries")
+
+# Shippo Webhook
+# api.add_resource(shippo_functions.ShippoWebhook, "/webhook-shippo")
+
+# Categories
+api.add_resource(Categories, "/products/categories")
+
+# Catalogs
+api.add_resource(Catalogs, "/products/catalogs")
 
 
 if __name__ == "__main__":
