@@ -188,6 +188,8 @@ class ProductImages(Resource):
         cursor.close()
         db.close()
         logger.debug(response)
+        if not response:
+            response = [{"file_path": f"https://images.kumpeapps.com/filament?sku={sku['base_sku']}-main"}]
         return (
             {"response": response, "status_code": 200},
             200,
