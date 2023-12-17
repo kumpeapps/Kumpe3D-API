@@ -1,10 +1,11 @@
+"""Gunicorn Config for Kumpe3D API Service"""
 import multiprocessing
 
 workers = multiprocessing.cpu_count() * 3 + 1
-bind = 'unix:kumpe3dapi.sock'
-umask = 0o007
-reload = True
+bind = 'unix:kumpe3dapi.sock'  # pylint: disable=invalid-name
+umask = 0o007  # pylint: disable=invalid-name
+reload = True  # pylint: disable=invalid-name
 
 #logging
-accesslog = '-'
-errorlog = '-'
+accesslog = '-'  # pylint: disable=invalid-name
+errorlog = '-'  # pylint: disable=invalid-name
