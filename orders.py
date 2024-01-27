@@ -251,16 +251,6 @@ class CheckoutFinal(Resource):
                     VALUES
                         (%s, %s, %s, %s, %s, %s, '');
         """
-        stock_sql = """
-                    INSERT INTO `Web_3dprints`.`stock`
-                        (`sku`,
-                        `swatch_id`,
-                        `qty`)
-                    VALUES
-                        (%s, %s, 0 - %s)
-                    ON DUPLICATE KEY UPDATE    
-                        qty = qty - %s;
-        """
         history_sql = """
                     INSERT INTO `Web_3dprints`.`stock`
                         (`sku`,
@@ -348,13 +338,6 @@ class CheckoutFinal(Resource):
             email_data["email_products"] = (
                 email_data["email_products"] + html_email_items
             )
-            stock_values = (
-                item["baseSKU"],
-                item["colorID"],
-                item["quantity"],
-                item["quantity"],
-            )
-            cursor.execute(stock_sql, stock_values)
             db.commit()
         history_sql = """
             INSERT INTO `Web_3dprints`.`orders__history`
