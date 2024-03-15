@@ -60,7 +60,7 @@ class SiteParams(Resource):
         except KeyError:
             referrer = "none"
         logger.info("Referrer: %s", referrer)
-        if referrer != base_url + "/":
+        if referrer != base_url + "/" and referrer != base_url:
             logger.error("Returned 401 Unauthorized")
             return (
                 {"error": "Unauthorized"},
