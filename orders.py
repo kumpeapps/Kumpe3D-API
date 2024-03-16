@@ -367,6 +367,16 @@ class CheckoutFinal(Resource):
                     email,
                 ),
             )
+            email_thread2 = Process(
+                target=send_email,
+                args=(
+                    "orders@kumpe3d.com",
+                    f"{email_prefix}Kumpe3D Order {order_id}",
+                    email,
+                ),
+            )
+            email_thread2.daemon = True
+            email_thread2.start()
         else:
             email_thread = Process(
                 target=send_email,
