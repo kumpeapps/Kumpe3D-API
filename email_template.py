@@ -561,7 +561,7 @@ def generate_email(data: dict):
                                                                         <td align="center"
                                                                             style="padding:0;Margin:0;position:relative"><img
                                                                                 class="adapt-img"
-                                                                                src="https://www.kumpe3d.com/images/coverlogo_suffix.jpg"
+                                                                                src="https://www.kumpe3d.com/images/cover.jpg"
                                                                                 alt title width="600"
                                                                                 style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic">
                                                                         </td>
