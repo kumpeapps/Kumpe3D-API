@@ -124,7 +124,7 @@ class Zoho(Resource):
             cursor.execute(orders_sql, orders_values)
             db.commit()
         except:
-            pass
+            logger.error("Add Order Error")
         order_id = cursor.lastrowid
 
         items_sql = """
@@ -135,12 +135,15 @@ class Zoho(Resource):
                         `price`,
                         `qty`,
                         `cost`,
-                        `customization`)
+                        `customization`,
+                        `last_updated_by`)
                     VALUES
-                        (%s, %s, %s, %s, %s, %s, '');
+                        (%s, %s, %s, %s, %s, %s, '', 'ZohoBooks');
         """
 
+        logger.debug(f"Item List: {items}")
         for item in items:
+            logger.debug(f"Item: {item}")
             item_values = (
                 order_id,
                 item["sku"],
@@ -152,33 +155,34 @@ class Zoho(Resource):
             try:
                 cursor.execute(items_sql, item_values)
                 db.commit()
+                logger.debug("Item Added")
             except:
-                pass
-            history_sql = """
-                INSERT INTO `Web_3dprints`.`orders__history`
-                    (`idorders`,
-                    `status_id`,
-                    `notes`,
-                    `updated_by`)
-                VALUES
-                    (%s, %s, %s, 'checkout');
-            """
-            history_values = (
-                order_id,
-                3,
-                f"Zoho Sales Order #{salesorder_number}",
-            )
-            try:
-                cursor.execute(history_sql, history_values)
-                db.commit()
-                db.close()
-            except:
-                pass
-            notif_thread = Process(target=notif.new_order, args=(order_id,))
-            notif_thread.daemon = True
-            notif_thread.start()
+                logger.error(f"Item Add Error: {item}")
+        history_sql = """
+            INSERT INTO `Web_3dprints`.`orders__history`
+                (`idorders`,
+                `status_id`,
+                `notes`,
+                `updated_by`)
+            VALUES
+                (%s, %s, %s, 'ZohoBooks');
+        """
+        history_values = (
+            order_id,
+            3,
+            f"Zoho Sales Order #{salesorder_number}",
+        )
+        try:
+            cursor.execute(history_sql, history_values)
+            db.commit()
+            db.close()
+        except:
+            logger.error("Order History Add Error")
+        notif_thread = Process(target=notif.new_order, args=(order_id,))
+        notif_thread.daemon = True
+        notif_thread.start()
 
-
+        logger.info(f"Sales Order {salesorder_number} Added")
         return (
             {"response": "response", "status_code": 200},
             200,
