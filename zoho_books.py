@@ -164,7 +164,6 @@ class Zoho(Resource):
             )
             cursor.execute(history_sql, history_values)
             db.commit()
-            cursor.close()
             db.close()
             notif_thread = Process(target=notif.new_order, args=(order_id,))
             notif_thread.daemon = True
