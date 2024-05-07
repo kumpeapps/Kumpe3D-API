@@ -1,4 +1,5 @@
 """Zoho Books Webhooks"""
+
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
 from multiprocessing import Process
@@ -22,7 +23,9 @@ logger = logging.getLogger("zoho")
 
 class Zoho(Resource):
     """Product Functions"""
+
     logger = logging.getLogger("zoho")
+
     def post(self):
         """Get Product Data"""
         sql_params = Params.SQL
@@ -38,13 +41,13 @@ class Zoho(Resource):
         json_args = request.get_json(force=True)
         self.logger.debug("JSON ARGS: %s", json_args)
         sales_order = json_args["salesorder"]
-        items = sales_order['line_items']
-        po_number = sales_order['reference_number']
-        salesorder_number = sales_order['salesorder_number']
-        salesorder_id = sales_order['salesorder_id']
-        zoho_cust_id = sales_order['customer_id']
-        email = sales_order['contact_person_details'][0]["email"]
-        shipping_address = sales_order['shipping_address']
+        items = sales_order["line_items"]
+        po_number = sales_order["reference_number"]
+        salesorder_number = sales_order["salesorder_number"]
+        salesorder_id = sales_order["salesorder_id"]
+        zoho_cust_id = sales_order["customer_id"]
+        email = sales_order["contact_person_details"][0]["email"]
+        shipping_address = sales_order["shipping_address"]
 
         orders_sql = """
                     INSERT INTO `Web_3dprints`.`orders`
@@ -104,27 +107,32 @@ class Zoho(Resource):
             zoho_cust_id,
             po_number,
             salesorder_number,
-            shipping_address['attention'],
+            shipping_address["attention"],
             email,
-            shipping_address['address'],
-            shipping_address['street2'],
-            shipping_address['city'],
-            shipping_address['state_code'],
-            shipping_address['zip'],
-            shipping_address['country_code'],
-            sales_order['sub_total'],
-            sales_order['tax_total'],
-            sales_order['shipping_charge'],
-            sales_order['discount_total'],
-            sales_order['total'],
-            sales_order['date'],
-            sales_order['notes']
+            shipping_address["address"],
+            shipping_address["street2"],
+            shipping_address["city"],
+            shipping_address["state_code"],
+            shipping_address["zip"],
+            shipping_address["country_code"],
+            sales_order["sub_total"],
+            sales_order["tax_total"],
+            sales_order["shipping_charge"],
+            sales_order["discount_total"],
+            sales_order["total"],
+            sales_order["date"],
+            sales_order["notes"],
         )
         try:
             cursor.execute(orders_sql, orders_values)
             db.commit()
         except:
             logger.error("Add Order Error")
+            return (
+                {"response": "Failed to Add Order", "status_code": 500},
+                500,
+                {"Access-Control-Allow-Origin": "*"},
+            )
         order_id = cursor.lastrowid
 
         items_sql = """
@@ -184,7 +192,7 @@ class Zoho(Resource):
 
         logger.info(f"Sales Order {salesorder_number} Added")
         return (
-            {"response": "response", "status_code": 200},
-            200,
+            {"response": "success", "status_code": 201},
+            201,
             {"Access-Control-Allow-Origin": "*"},
         )
