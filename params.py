@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from infisical_api import infisical_api
 
 
-load_dotenv()
+load_dotenv(override=True)
 service_token = os.getenv("SERVICE_TOKEN")
 app_env = os.getenv("APP_ENV")
 creds = infisical_api(
