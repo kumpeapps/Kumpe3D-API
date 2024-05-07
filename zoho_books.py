@@ -73,7 +73,7 @@ class Zoho(Resource):
                         `notes`,
                         `referral`,
                         `sales_channel`,
-                        `last_updated_by')
+                        `last_updated_by`)
                     VALUES
                         (0, 
                         (SELECT iddistributors FROM Web_3dprints.distributors where zoho_cust_id = %s)
