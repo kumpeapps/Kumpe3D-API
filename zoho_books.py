@@ -75,8 +75,8 @@ class Zoho(Resource):
                         `sales_channel`,
                         `last_updated_by`)
                     VALUES
-                        (0, 
-                        (SELECT iddistributors FROM Web_3dprints.distributors where zoho_cust_id = %s)
+                        (0,
+                        (SELECT iddistributors FROM Web_3dprints.distributors where zoho_cust_id = %s),
                         %s,
                         %s,
                         "test",
