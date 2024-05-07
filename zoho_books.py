@@ -120,8 +120,11 @@ class Zoho(Resource):
             sales_order['date'],
             sales_order['notes']
         )
-        cursor.execute(orders_sql, orders_values)
-        db.commit()
+        try:
+            cursor.execute(orders_sql, orders_values)
+            db.commit()
+        except:
+            pass
         order_id = cursor.lastrowid
 
         items_sql = """
@@ -146,8 +149,11 @@ class Zoho(Resource):
                 item["quantity"],
                 0,
             )
-            cursor.execute(items_sql, item_values)
-            db.commit()
+            try:
+                cursor.execute(items_sql, item_values)
+                db.commit()
+            except:
+                pass
             history_sql = """
                 INSERT INTO `Web_3dprints`.`orders__history`
                     (`idorders`,
@@ -162,9 +168,12 @@ class Zoho(Resource):
                 3,
                 f"Zoho Sales Order #{salesorder_number}",
             )
-            cursor.execute(history_sql, history_values)
-            db.commit()
-            db.close()
+            try:
+                cursor.execute(history_sql, history_values)
+                db.commit()
+                db.close()
+            except:
+                pass
             notif_thread = Process(target=notif.new_order, args=(order_id,))
             notif_thread.daemon = True
             notif_thread.start()
