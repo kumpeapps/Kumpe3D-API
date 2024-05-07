@@ -14,11 +14,10 @@ creds = infisical_api(
     service_token=service_token, infisical_url="https://creds.kumpeapps.com"
 )
 
-
 class Params:
     """Parameters"""
 
-    base_url = creds.get_secret("URL", environment=app_env, path="/WEB/").secret_value # pylint: disable=no-member
+    base_url = creds.get_secret("URL", environment=app_env, path="/WEB/").secretValue # pylint: disable=no-member
     app_env = os.getenv("APP_ENV")
 
     def log_level():  # pylint: disable=no-method-argument
@@ -40,20 +39,20 @@ class Params:
         """SQL Parameters for Web_3d User"""
 
         username = creds.get_secret( # pylint: disable=no-member
-            "USERNAME", environment=app_env, path="/MYSQL/"
-        ).secret_value
+            secret_name="USERNAME", environment=app_env, path="/MYSQL/"
+        ).secretValue
         password = creds.get_secret( # pylint: disable=no-member
-            "PASSWORD", environment=app_env, path="/MYSQL/"
-        ).secret_value
+            secret_name="PASSWORD", environment=app_env, path="/MYSQL/"
+        ).secretValue
         server = creds.get_secret( # pylint: disable=no-member
-            "SERVER", environment=app_env, path="/MYSQL/"
-        ).secret_value
+            secret_name="SERVER", environment=app_env, path="/MYSQL/"
+        ).secretValue
         port = creds.get_secret( # pylint: disable=no-member
-            "PORT", environment=app_env, path="/MYSQL/"
-        ).secret_value
+            secret_name="PORT", environment=app_env, path="/MYSQL/"
+        ).secretValue
         database = creds.get_secret( # pylint: disable=no-member
-            "DATABASE", environment=app_env, path="/MYSQL/"
-        ).secret_value
+            secret_name="DATABASE", environment=app_env, path="/MYSQL/"
+        ).secretValue
 
         def dict():  # pylint: disable=no-method-argument
             """returns as dictionary"""
@@ -69,46 +68,46 @@ class Params:
         """PayPal Parameters"""
 
         api_url = creds.get_secret( # pylint: disable=no-member
-            "API_URL", environment=app_env, path="/PAYPAL/"
-        ).secret_value
+            secret_name="API_URL", environment=app_env, path="/PAYPAL/"
+        ).secretValue
         client_id = creds.get_secret( # pylint: disable=no-member
-            "CLIENT_ID", environment=app_env, path="/PAYPAL/"
-        ).secret_value
+            secret_name="CLIENT_ID", environment=app_env, path="/PAYPAL/"
+        ).secretValue
         secret = creds.get_secret( # pylint: disable=no-member
-            "SECRET", environment=app_env, path="/PAYPAL/"
-        ).secret_value
+            secret_name="SECRET", environment=app_env, path="/PAYPAL/"
+        ).secretValue
 
     class SendPulse:
         """Send Pulse Parameters"""
 
         server = creds.get_secret( # pylint: disable=no-member
-            "SERVER", environment=app_env, path="/SENDPULSE/"
-        ).secret_value
+            secret_name="SERVER", environment=app_env, path="/SENDPULSE/"
+        ).secretValue
         port = creds.get_secret( # pylint: disable=no-member
-            "PORT", environment=app_env, path="/SENDPULSE/"
-        ).secret_value
+            secret_name="PORT", environment=app_env, path="/SENDPULSE/"
+        ).secretValue
         username = creds.get_secret( # pylint: disable=no-member
-            "USERNAME", environment=app_env, path="/SENDPULSE/"
-        ).secret_value
+            secret_name="USERNAME", environment=app_env, path="/SENDPULSE/"
+        ).secretValue
         password = creds.get_secret( # pylint: disable=no-member
-            "PASSWORD", environment=app_env, path="/SENDPULSE/"
-        ).secret_value
+            secret_name="PASSWORD", environment=app_env, path="/SENDPULSE/"
+        ).secretValue
         sender = creds.get_secret( # pylint: disable=no-member
-            "SENDER", environment=app_env, path="/SENDPULSE/"
-        ).secret_value
+            secret_name="SENDER", environment=app_env, path="/SENDPULSE/"
+        ).secretValue
 
     class Pushover:
         """Pushover API Parameters"""
 
         apikey = creds.get_secret( # pylint: disable=no-member
-            "APIKEY", environment=app_env, path="/PUSHOVER/"
-        ).secret_value
+            secret_name="APIKEY", environment=app_env, path="/PUSHOVER/"
+        ).secretValue
         orders_group = creds.get_secret( # pylint: disable=no-member
-            "ORDERS_GROUP", environment=app_env, path="/PUSHOVER/"
-        ).secret_value
+            secret_name="ORDERS_GROUP", environment=app_env, path="/PUSHOVER/"
+        ).secretValue
         server = creds.get_secret( # pylint: disable=no-member
-            "SERVER", environment=app_env, path="/PUSHOVER/"
-        ).secret_value
+            secret_name="SERVER", environment=app_env, path="/PUSHOVER/"
+        ).secretValue
 
 
 if __name__ == "__main__":
