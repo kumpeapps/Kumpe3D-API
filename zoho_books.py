@@ -79,8 +79,8 @@ class Zoho(Resource):
                         (SELECT iddistributors FROM Web_3dprints.distributors where zoho_cust_id = %s)
                         %s,
                         %s,
-                        " ",
-                        " ",
+                        "test",
+                        "test",
                         %s,
                         %s,
                         %s,
