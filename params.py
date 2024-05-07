@@ -1,23 +1,24 @@
 """Parameters file for Kumpe3D API"""
+
 import setup  # pylint: disable=unused-import, wrong-import-order
 import os
 import logging
 from dotenv import load_dotenv
-import infisical
+from infisical_api import infisical_api
 
 
 load_dotenv()
 service_token = os.getenv("SERVICE_TOKEN")
 app_env = os.getenv("APP_ENV")
-creds = infisical.InfisicalClient(
-    token=service_token, site_url="https://creds.kumpeapps.com"
+creds = infisical_api(
+    service_token=service_token, infisical_url="https://creds.kumpeapps.com"
 )
 
 
 class Params:
     """Parameters"""
 
-    base_url = creds.get_secret("URL", environment=app_env, path="/WEB/").secret_value
+    base_url = creds.get_secret("URL", environment=app_env, path="/WEB/").secret_value # pylint: disable=no-member
     app_env = os.getenv("APP_ENV")
 
     def log_level():  # pylint: disable=no-method-argument
@@ -38,19 +39,19 @@ class Params:
     class SQL:
         """SQL Parameters for Web_3d User"""
 
-        username = creds.get_secret(
+        username = creds.get_secret( # pylint: disable=no-member
             "USERNAME", environment=app_env, path="/MYSQL/"
         ).secret_value
-        password = creds.get_secret(
+        password = creds.get_secret( # pylint: disable=no-member
             "PASSWORD", environment=app_env, path="/MYSQL/"
         ).secret_value
-        server = creds.get_secret(
+        server = creds.get_secret( # pylint: disable=no-member
             "SERVER", environment=app_env, path="/MYSQL/"
         ).secret_value
-        port = creds.get_secret(
+        port = creds.get_secret( # pylint: disable=no-member
             "PORT", environment=app_env, path="/MYSQL/"
         ).secret_value
-        database = creds.get_secret(
+        database = creds.get_secret( # pylint: disable=no-member
             "DATABASE", environment=app_env, path="/MYSQL/"
         ).secret_value
 
@@ -67,45 +68,45 @@ class Params:
     class PayPal:
         """PayPal Parameters"""
 
-        api_url = creds.get_secret(
+        api_url = creds.get_secret( # pylint: disable=no-member
             "API_URL", environment=app_env, path="/PAYPAL/"
         ).secret_value
-        client_id = creds.get_secret(
+        client_id = creds.get_secret( # pylint: disable=no-member
             "CLIENT_ID", environment=app_env, path="/PAYPAL/"
         ).secret_value
-        secret = creds.get_secret(
+        secret = creds.get_secret( # pylint: disable=no-member
             "SECRET", environment=app_env, path="/PAYPAL/"
         ).secret_value
 
     class SendPulse:
         """Send Pulse Parameters"""
 
-        server = creds.get_secret(
+        server = creds.get_secret( # pylint: disable=no-member
             "SERVER", environment=app_env, path="/SENDPULSE/"
         ).secret_value
-        port = creds.get_secret(
+        port = creds.get_secret( # pylint: disable=no-member
             "PORT", environment=app_env, path="/SENDPULSE/"
         ).secret_value
-        username = creds.get_secret(
+        username = creds.get_secret( # pylint: disable=no-member
             "USERNAME", environment=app_env, path="/SENDPULSE/"
         ).secret_value
-        password = creds.get_secret(
+        password = creds.get_secret( # pylint: disable=no-member
             "PASSWORD", environment=app_env, path="/SENDPULSE/"
         ).secret_value
-        sender = creds.get_secret(
+        sender = creds.get_secret( # pylint: disable=no-member
             "SENDER", environment=app_env, path="/SENDPULSE/"
         ).secret_value
 
     class Pushover:
         """Pushover API Parameters"""
 
-        apikey = creds.get_secret(
+        apikey = creds.get_secret( # pylint: disable=no-member
             "APIKEY", environment=app_env, path="/PUSHOVER/"
         ).secret_value
-        orders_group = creds.get_secret(
+        orders_group = creds.get_secret( # pylint: disable=no-member
             "ORDERS_GROUP", environment=app_env, path="/PUSHOVER/"
         ).secret_value
-        server = creds.get_secret(
+        server = creds.get_secret( # pylint: disable=no-member
             "SERVER", environment=app_env, path="/PUSHOVER/"
         ).secret_value
 
