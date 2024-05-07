@@ -8,6 +8,7 @@ from siteparams import SiteParams
 from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 from shipping import Countries
+from zoho_books import Zoho
 # import shippo_functions
 
 # from flask_restful import Resource, Api, reqparse
@@ -60,6 +61,9 @@ api.add_resource(Categories, "/products/categories")
 
 # Catalogs
 api.add_resource(Catalogs, "/products/catalogs")
+
+# Zoho Books Webhook
+api.add_resource(Zoho, "/zoho_sales_order")
 
 
 if __name__ == "__main__":

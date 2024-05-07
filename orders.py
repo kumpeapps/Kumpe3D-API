@@ -251,6 +251,7 @@ class CheckoutFinal(Resource):
                     VALUES
                         (%s, %s, %s, %s, %s, %s, '');
         """
+
         history_sql = """
                     INSERT INTO `Web_3dprints`.`stock`
                         (`sku`,
@@ -261,6 +262,7 @@ class CheckoutFinal(Resource):
                     ON DUPLICATE KEY UPDATE    
                         qty = qty - %s;
         """
+
         empty_session_sql = (
             "DELETE FROM Web_3dprints.cart__items WHERE session_id = %s;"
         )
@@ -571,7 +573,10 @@ def build_checkout_data(
     except TypeError:
         tax_total = 0
     if country == "US":
-        shipping_total = 10
+        if cart["subtotal"] > 200:
+            shipping_total = 0
+        else:
+            shipping_total = 10
     elif country == "CA":
         shipping_total = 20
     else:
