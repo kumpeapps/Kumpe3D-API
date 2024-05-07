@@ -71,7 +71,6 @@ class Zoho(Resource):
                         `status_id`,
                         `payment_method`,
                         `notes`,
-                        `referral`,
                         `sales_channel`,
                         `last_updated_by`)
                     VALUES
