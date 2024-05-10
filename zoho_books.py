@@ -222,7 +222,7 @@ class Zoho(Resource):
                 WHERE 1=1
                     AND so_number = 'SO-00010;
         """
-        cursor.execute(sql, args["so_number"])
+        cursor.execute(sql)
         response = cursor.fetchone()
         db.close()
         return (
