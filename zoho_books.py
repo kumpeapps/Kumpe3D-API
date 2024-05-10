@@ -220,9 +220,9 @@ class Zoho(Resource):
                 FROM
                     Web_3dprints.orders
                 WHERE 1=1
-                    AND so_number = 'SO-00005';
+                    AND so_number = %s;
         """
-        cursor.execute(sql)
+        cursor.execute(sql, args['so_number'])
         response = cursor.fetchone()
         db.close()
         try:
