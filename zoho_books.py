@@ -228,7 +228,7 @@ class Zoho(Resource):
         try:
             order_id = response["idorders"]
         except TypeError:
-            order_id = ""
+            order_id = ' '
         return (
             order_id,
             200,
