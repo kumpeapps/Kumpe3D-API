@@ -196,3 +196,36 @@ class Zoho(Resource):
             201,
             {"Access-Control-Allow-Origin": "*"},
         )
+
+    def get(self):
+        """Order ID"""
+        args = request.args
+        sql_params = Params.SQL
+        db = pymysql.connect(
+            db=sql_params.database,
+            user=sql_params.username,
+            passwd=sql_params.password,
+            host=sql_params.server,
+            port=3306,
+        )
+        cursor = db.cursor(pymysql.cursors.DictCursor)
+        sql = """
+                SELECT 
+                    idorders,
+                    idcustomers,
+                    distributor_id,
+                    po_number,
+                    so_number,
+                    invoice_number
+                FROM
+                    Web_3dprints.orders
+                WHERE 1=1
+                    AND so_number = %s;
+        """
+        cursor.execute(sql, args["so_number"])
+        response = cursor.fetchone()
+        return (
+            response["idorders"],
+            201,
+            {"Access-Control-Allow-Origin": "*"},
+        )
