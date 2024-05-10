@@ -225,8 +225,12 @@ class Zoho(Resource):
         cursor.execute(sql)
         response = cursor.fetchone()
         db.close()
+        try:
+            order_id = response["idorders"]
+        except TypeError:
+            order_id = ""
         return (
-            response["idorders"],
-            201,
+            order_id,
+            200,
             {"Access-Control-Allow-Origin": "*"},
         )
