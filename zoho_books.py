@@ -220,7 +220,7 @@ class Zoho(Resource):
                 FROM
                     Web_3dprints.orders
                 WHERE 1=1
-                    AND so_number = 'SO-00010';
+                    AND so_number = 'SO-00005';
         """
         cursor.execute(sql)
         response = cursor.fetchone()
