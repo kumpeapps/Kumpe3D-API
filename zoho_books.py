@@ -55,7 +55,10 @@ class Zoho(Resource):
 
         if hasattr(custom_field_hash, 'cf_distributor_order_number'):
             dist_order_id = custom_field_hash['cf_distributor_order_number']
+            logger.debug("has cf_distributor_order_number")
         else:
+            logger.debug("does not have cf_distributor_order_number")
+            logger.debug(custom_field_hash)
             dist_order_id = ""
 
         orders_sql = """
