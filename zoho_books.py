@@ -41,13 +41,25 @@ class Zoho(Resource):
         json_args = request.get_json(force=True)
         self.logger.debug("JSON ARGS: %s", json_args)
         sales_order = json_args["salesorder"]
+        custom_field_hash = sales_order["custom_field_hash"]
         items = sales_order["line_items"]
-        po_number = sales_order["reference_number"]
+        if 'cf_po' in custom_field_hash:
+            po_number = custom_field_hash['cf_po']
+        else:
+            po_number = sales_order["reference_number"]
         salesorder_number = sales_order["salesorder_number"]
         salesorder_id = sales_order["salesorder_id"]
         zoho_cust_id = sales_order["customer_id"]
         email = sales_order["contact_person_details"][0]["email"]
         shipping_address = sales_order["shipping_address"]
+
+        if 'cf_distributor_order_number' in custom_field_hash:
+            dist_order_id = custom_field_hash['cf_distributor_order_number']
+            logger.debug("has cf_distributor_order_number")
+        else:
+            logger.debug("does not have cf_distributor_order_number")
+            logger.debug(custom_field_hash)
+            dist_order_id = ""
 
         orders_sql = """
                     INSERT INTO `Web_3dprints`.`orders`
@@ -55,6 +67,7 @@ class Zoho(Resource):
                         `distributor_id`,
                         `po_number`,
                         `so_number`,
+                        `dist_order_id`,
                         `first_name`,
                         `last_name`,
                         `company_name`,
@@ -79,6 +92,7 @@ class Zoho(Resource):
                     VALUES
                         (0,
                         (SELECT iddistributors FROM Web_3dprints.distributors where zoho_cust_id = %s),
+                        %s,
                         %s,
                         %s,
                         "",
@@ -107,6 +121,7 @@ class Zoho(Resource):
             zoho_cust_id,
             po_number,
             salesorder_number,
+            dist_order_id,
             shipping_address["attention"],
             email,
             shipping_address["address"],
@@ -222,13 +237,13 @@ class Zoho(Resource):
                 WHERE 1=1
                     AND so_number = %s;
         """
-        cursor.execute(sql, args['so_number'])
+        cursor.execute(sql, args["so_number"])
         response = cursor.fetchone()
         db.close()
         try:
             order_id = response["idorders"]
         except TypeError:
-            order_id = ' '
+            order_id = " "
         return (
             order_id,
             200,
