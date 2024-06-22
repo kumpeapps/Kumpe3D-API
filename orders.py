@@ -14,6 +14,7 @@ import paypal
 from send_email import send_email
 from costs import get_product_costs
 import notif
+from label_print_q import print_packing_slip
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -379,6 +380,7 @@ class CheckoutFinal(Resource):
             )
             email_thread2.daemon = True
             email_thread2.start()
+            print_packing_slip(order_id)
         else:
             email_thread = Process(
                 target=send_email,
