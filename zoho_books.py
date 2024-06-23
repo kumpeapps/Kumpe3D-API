@@ -6,6 +6,7 @@ from multiprocessing import Process
 from flask import request, Response
 from flask_restful import Resource
 import notif
+from label_print_q import print_packing_slip
 
 # from flask_restful import reqparse
 import pymysql
@@ -204,6 +205,7 @@ class Zoho(Resource):
         notif_thread = Process(target=notif.new_order, args=(order_id,))
         notif_thread.daemon = True
         notif_thread.start()
+        print_packing_slip(order_id)
 
         logger.info(f"Sales Order {salesorder_number} Added")
         return (
