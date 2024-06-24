@@ -201,7 +201,7 @@ class Zoho(Resource):
             db.commit()
             db.close()
         except:
-            logger.error("Order History Add Error")
+            logger.error("Order History Add Error!")
         notif_thread = Process(target=notif.new_order, args=(order_id,))
         notif_thread.daemon = True
         notif_thread.start()
