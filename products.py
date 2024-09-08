@@ -126,7 +126,7 @@ def get_products(
         sku = sku["sku"]
 
     sql_params = Params.SQL
-    logger.debug(f"SQL Params: {sql_params}")
+    logger.debug(f"SQL Params: {sql_params.server}")
     db = pymysql.connect(
         db=sql_params.database,
         user=sql_params.username,
