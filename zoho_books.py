@@ -6,6 +6,7 @@ from multiprocessing import Process
 from flask import request, Response
 from flask_restful import Resource
 import notif
+from label_print_q import print_packing_slip
 
 # from flask_restful import reqparse
 import pymysql
@@ -43,8 +44,8 @@ class Zoho(Resource):
         sales_order = json_args["salesorder"]
         custom_field_hash = sales_order["custom_field_hash"]
         items = sales_order["line_items"]
-        if 'cf_po' in custom_field_hash:
-            po_number = custom_field_hash['cf_po']
+        if "cf_po" in custom_field_hash:
+            po_number = custom_field_hash["cf_po"]
         else:
             po_number = sales_order["reference_number"]
         salesorder_number = sales_order["salesorder_number"]
@@ -53,8 +54,8 @@ class Zoho(Resource):
         email = sales_order["contact_person_details"][0]["email"]
         shipping_address = sales_order["shipping_address"]
 
-        if 'cf_distributor_order_number' in custom_field_hash:
-            dist_order_id = custom_field_hash['cf_distributor_order_number']
+        if "cf_distributor_order_number" in custom_field_hash:
+            dist_order_id = custom_field_hash["cf_distributor_order_number"]
             logger.debug("has cf_distributor_order_number")
         else:
             logger.debug("does not have cf_distributor_order_number")
@@ -200,10 +201,11 @@ class Zoho(Resource):
             db.commit()
             db.close()
         except:
-            logger.error("Order History Add Error")
+            logger.error("Order History Add Error!")
         notif_thread = Process(target=notif.new_order, args=(order_id,))
         notif_thread.daemon = True
         notif_thread.start()
+        print_packing_slip(order_id)
 
         logger.info(f"Sales Order {salesorder_number} Added")
         return (
