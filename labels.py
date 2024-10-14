@@ -53,4 +53,8 @@ class CaseLabel(Resource):
         """
         items = item_row
 
-        return render_template("case_label.html", qr_data=qr_data, items=items)
+        return (
+            {"response": "response", "status_code": 200},
+            200,
+            {"Access-Control-Allow-Origin": "*"},
+        )
