@@ -34,16 +34,6 @@ class CaseLabel(Resource):
         args = request.args
         self.logger.debug("Args: %s", args)
         qr_data = args['qr_data']
-        try:
-            session_id = args["session_id"]
-        except KeyError:
-            self.logger.error("session_id missing")
-            return (
-                {"error": "session_id query parameter is required", "status_code": 422},
-                422,
-                {"Access-Control-Allow-Origin": "*"},
-            )
-        self.logger.debug(session_id)
         item_row = """
             <tr>
             <td class='sku'>test product</td>
@@ -53,8 +43,4 @@ class CaseLabel(Resource):
         """
         items = item_row
 
-        return (
-            {"response": "response", "status_code": 200},
-            200,
-            {"Access-Control-Allow-Origin": "*"},
-        )
+        return render_template("case_label.html", qr_data=qr_data, items=items)
