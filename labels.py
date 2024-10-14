@@ -1,7 +1,7 @@
 """Cart Function"""
 import setup  # pylint: disable=unused-import, wrong-import-order
 import logging
-from flask import request, Response, render_template
+from flask import request, Response, render_template, make_response
 from flask_restful import Resource
 import pymysql
 from params import Params
@@ -44,4 +44,4 @@ class CaseLabel(Resource):
         """
         items = item_row
 
-        return render_template("case_label.html", qr_data=qr_data, items=items)
+        return make_response(render_template("case_label.html", qr_data=qr_data, items=items))
