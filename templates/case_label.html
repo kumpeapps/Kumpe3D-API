@@ -1,0 +1,153 @@
+
+<html>
+
+<head>
+  <style>
+    header {
+      width: 4in;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      height: 1in;
+    }
+
+    body {
+      margin: 0in 0in 0in 0in;
+      width: 4in;
+    }
+
+    * {
+      font-family: arial;
+      font-size: 12px;
+    }
+
+    th {
+      background-color: gray;
+      color: white;
+      font-weight: bold;
+    }
+
+    td {
+      vertical-align: top;
+    }
+
+    .store-info div {
+      font-size: 1.2em;
+    }
+
+    .store-info div.company-name {
+      font-size: 1.5em;
+      font-weight: bold;
+    }
+
+    table.order-info td {
+
+      padding: 2px 4px 2px 4px;
+    }
+
+    table.order-info tr td.label {
+      font-weight: bold;
+      text-align: right;
+      border-right: solid 1px #c0c0c0;
+
+    }
+
+    table.order-info tr td.label.first {}
+
+    table.order-info tr td.label.last {}
+
+    table.line-items {
+      margin-top: 0.1in;
+      padding: 0.1in 0in 0.1in 0in;
+    }
+
+    table.line-items th {
+      padding: 2px;
+    }
+
+    table.footer {
+      border-top: solid 1px #707070;
+    }
+
+    table.footer td.label {
+      font-weight: bold;
+      text-align: right;
+    }
+
+    td.notes {
+      padding: 0.1in;
+      font-style: italic;
+    }
+
+    .barcode {
+      font-family: "Free 3 of 9 Extended";
+      font-size: 48pt;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Order Header - THIS SECTION CAN BE MODIFIED AS NEEDED -->
+  <table cellspacing=0 cellpadding="2" border=0 style="width:4in">
+    <thead>
+      <tr>
+        <th colspan="3">
+          Case Label
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td colspan="2" style="width:3.5in" class="store-info">
+          <div class="company-name">Kumpe3D</div>
+          <div>8180 Elm Ln<br/>Rogers, AR  72756</div>
+        </td>
+        <td style="width:3.5in;" align="right" valign="top">
+          <img class="qr" src="https://api.qrserver.com/v1/create-qr-code/?size=50x50&data={{ qr_data }}">
+        </td>
+      </tr>
+      <tr>
+        <td style="height:0.15in"></td>
+      </tr>
+      <tr>
+        <img class="qr" src="<?php echo $qr_url; ?>">
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- END Order Header -->
+
+  <table cellspacing=0 cellpadding="2" border="0" style="width:100%" class="line-items">
+    <thead>
+
+      <!-- Order Items Header - THIS SECTION CAN BE MODIFIED AS NEEDED -->
+
+      <tr>
+        <th align="left" style="width:1.5in" class="sku">
+          Item
+        </th>
+        <th align="left" style="width:1.5in" class="sku">
+          Item SKU
+        </th>
+        <th align="center" style="width:0.75in">
+          Qty
+        </th>
+      </tr>
+
+      <!-- END Order Items Header -->
+
+    </thead>
+    <tbody>
+
+      <!-- Order Items - THIS SECTION CAN BE MODIFIED AS NEEDED -->
+      {{ items }}
+      <!-- END Order Items -->
+
+    </tbody>
+  </table>
+
+  </div>
+
+</body>
+
+</html>
