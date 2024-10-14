@@ -26,6 +26,7 @@ class CaseLabel(Resource):
         res.headers[
             "Access-Control-Allow-Methods"
         ] = "GET, OPTIONS, POST, PUT, PATCH, DELETE"
+        res.headers["Content-Type"] = "html"
         return res
 
     def get(self):
