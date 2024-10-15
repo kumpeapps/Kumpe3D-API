@@ -44,8 +44,8 @@ class CaseLabel(Resource):
         """
         item_list = [
             {
-                'title': 'test product',
-                'sku': 'k3d-test',
+                'title': 'test productuyiuyi iu t iuy  gy i k',
+                'sku': 'k3d-pdb-nsn-k32',
                 'qty': '5'
             }
         ]
