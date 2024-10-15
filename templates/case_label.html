@@ -122,14 +122,14 @@
       <!-- Order Items Header - THIS SECTION CAN BE MODIFIED AS NEEDED -->
 
       <tr>
-        <th align="left" style="width:1.5in" class="sku">
-          Item
-        </th>
-        <th align="left" style="width:1.5in" class="sku">
-          Item SKU
-        </th>
         <th align="center" style="width:0.75in">
           Qty
+        </th>
+        <th align="left" style="width:1in" class="sku">
+          SKU
+        </th>
+        <th align="left" style="width:2in" class="sku">
+          Item
         </th>
       </tr>
 
@@ -140,9 +140,9 @@
       {% for i in items %}
       <!-- Order Items - THIS SECTION CAN BE MODIFIED AS NEEDED -->
       <tr>
-        <td class='sku'>{{ i["title"] }}</td>
+        <td class='sku'>{{ i["qty"] }}</td>
         <td class='sku'>{{ i["sku"] }}</td>
-        <td align='center'>{{ i["qty"] }}</td>
+        <td align='center'>{{ i["title"] }}</td>
       </tr>
       <!-- END Order Items -->
       {% endfor %}

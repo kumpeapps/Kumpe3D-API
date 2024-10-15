@@ -38,7 +38,7 @@ class CaseLabel(Resource):
         item_row = """
             <tr>
             <td class='sku'>test product</td>
-            <td class='sku'>k3d-test</td>
+            <td class='sku'>k3d-pdb-nsn-k32</td>
             <td align='center'>5</td>
             </tr>
         """
