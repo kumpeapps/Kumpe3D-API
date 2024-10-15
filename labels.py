@@ -5,6 +5,7 @@ from flask import request, Response, render_template, make_response
 from flask_restful import Resource
 import pymysql
 from params import Params
+import scan_list_builder as slb
 
 logging.basicConfig(
     filename="kumpe3d-api.log",
@@ -35,20 +36,10 @@ class CaseLabel(Resource):
         args = request.args
         self.logger.debug("Args: %s", args)
         qr_data = args['qr_data']
-        item_row = """
-            <tr>
-            <td class='sku'>test productuyiuyi iu t iuy  gy i k</td>
-            <td class='sku'>k3d-pdb-nsn-k32</td>
-            <td align='center'>5</td>
-            </tr>
-        """
-        item_list = [
-            {
-                'title': 'test productuyiuyi iu t iuy  gy i k',
-                'sku': 'k3d-pdb-nsn-k32',
-                'qty': '5'
-            }
-        ]
-        items = item_list
+        items_dict = slb.build_k3d_item_dict(qr_data)
+        items_list = []
+        for item in items_dict:
+            item["title"] = ""
+            items_list.append(item)
 
-        return make_response(render_template("case_label.html", qr_data=qr_data, items=items))
+        return make_response(render_template("case_label.html", qr_data=qr_data, items=items_list))
