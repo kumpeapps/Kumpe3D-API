@@ -42,6 +42,13 @@ class CaseLabel(Resource):
             <td align='center'>5</td>
             </tr>
         """
-        items = item_row
+        item_list = [
+            {
+                'title': 'test product',
+                'sku': 'k3d-test',
+                'qty': '5'
+            }
+        ]
+        items = item_list
 
         return make_response(render_template("case_label.html", qr_data=qr_data, items=items))

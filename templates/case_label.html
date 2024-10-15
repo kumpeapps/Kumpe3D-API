@@ -136,9 +136,13 @@
 
     </thead>
     <tbody>
-
+      {% for i in items %}
       <!-- Order Items - THIS SECTION CAN BE MODIFIED AS NEEDED -->
-      {% items %}
+      <tr>
+        <td class='sku'>{{ i["title"] }}</td>
+        <td class='sku'>{{ i["sku"] }}</td>
+        <td align='center'>{{ i["qty"] }}</td>
+      </tr>
       <!-- END Order Items -->
 
     </tbody>
