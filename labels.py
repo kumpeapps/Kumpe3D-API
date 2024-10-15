@@ -37,7 +37,7 @@ class CaseLabel(Resource):
         qr_data = args['qr_data']
         item_row = """
             <tr>
-            <td class='sku'>test product</td>
+            <td class='sku'>test productuyiuyi iu t iuy  gy i k</td>
             <td class='sku'>k3d-pdb-nsn-k32</td>
             <td align='center'>5</td>
             </tr>
