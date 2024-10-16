@@ -41,7 +41,7 @@ class CaseLabel(Resource):
             items_list.append(item)
 
         return make_response(
-            render_template("case_label.html", qr_data=qr_data, items=items_list)
+            render_template("case_label.html", qr_data=qr_data.upper, items=items_list)
         )
 
 
@@ -118,7 +118,7 @@ class SquareLabel(Resource):
             title = f"{title} ({color})"
 
         return make_response(
-            render_template("square_product_label.html", qr_data=qr_data, title=title)
+            render_template("square_product_label.html", qr_data=qr_data.upper, title=title)
         )
 
 
@@ -195,7 +195,7 @@ class ShelfLabel(Resource):
         return make_response(
             render_template(
                 "shelf_label.html",
-                qr_data=qr_data,
+                qr_data=qr_data.upper,
                 title=title,
                 filament_color=color,
                 filament_type=filament_type,
