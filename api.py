@@ -72,6 +72,9 @@ api.add_resource(labels.CaseLabel, "/label/caselabel")
 # Square Product Label
 api.add_resource(labels.SquareLabel, "/label/squareproductlabel")
 
+# Shelf Product Label
+api.add_resource(labels.ShelfLabel, "/label/shelflabel")
+
 
 if __name__ == "__main__":
     app.run(port=8081)  # run our Flask app
