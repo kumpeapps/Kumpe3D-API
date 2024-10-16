@@ -109,6 +109,7 @@ class SquareLabel(Resource):
         cursor.execute(temp_sql, (sku, sku, sku))
         cursor.execute(product_sku, (sku, sku, sku))
         product = cursor.fetchone()
+        cursor.close()
         db.close()
         title = product["title"]
         color = product["color_name"]
