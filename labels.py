@@ -65,8 +65,6 @@ class SquareLabel(Resource):
         sku = args.get("sku", "")
         qr_data = args.get("qr_data", sku)
         temp_sql = """
-            USE Web_3dprints;
-
             CREATE TEMPORARY TABLE IF NOT EXISTS temp_products AS (
                 SELECT
                     products.sku, title, color_name
@@ -79,7 +77,7 @@ class SquareLabel(Resource):
             );
         """
 
-        product_sku = """         
+        product_sku = """
             SELECT 
                 sku, title, color_name, 'sku' AS `search_type`
             FROM
