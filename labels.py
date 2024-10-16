@@ -64,7 +64,7 @@ class SquareLabel(Resource):
         self.logger.debug("Args: %s", args)
         sku = args.get("sku", "")
         qr_data = args.get("qr_data", sku)
-        product_sku = """
+        temp_sql = """
             USE Web_3dprints;
 
             CREATE TEMPORARY TABLE IF NOT EXISTS temp_products AS (
@@ -77,8 +77,9 @@ class SquareLabel(Resource):
                     products.sku = %s
                         OR products.sku = CONCAT(LEFT(%s, 11), '-000')
             );
+        """
 
-
+        product_sku = """         
             SELECT 
                 sku, title, color_name, 'sku' AS `search_type`
             FROM
@@ -96,7 +97,7 @@ class SquareLabel(Resource):
                     FROM
                         temp_products
                     WHERE
-                        sku = %s)
+                        sku = %s);
         """
         sql_params = Params.SQL
         db = pymysql.connect(
@@ -107,8 +108,10 @@ class SquareLabel(Resource):
             port=3306,
         )
         cursor = db.cursor(pymysql.cursors.DictCursor)
-        cursor.execute(product_sku, (sku, sku, sku, sku, sku, sku))
+        cursor.execute(temp_sql, (sku, sku, sku))
+        cursor.execute(product_sku, (sku, sku, sku))
         product = cursor.fetchone()
+        db.close()
         title = product["title"]
         color = product["color_name"]
         search_type = product["search_type"]
