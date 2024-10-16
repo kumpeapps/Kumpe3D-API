@@ -9,7 +9,7 @@ from cart import Cart
 from orders import Checkout, ZipCodes, Taxes, CheckoutFinal
 from shipping import Countries
 from zoho_books import Zoho
-from labels import CaseLabel
+import labels
 # import shippo_functions
 
 # from flask_restful import Resource, Api, reqparse
@@ -67,7 +67,10 @@ api.add_resource(Catalogs, "/products/catalogs")
 api.add_resource(Zoho, "/zoho_sales_order")
 
 # Case Label
-api.add_resource(CaseLabel, "/label/caselabel")
+api.add_resource(labels.CaseLabel, "/label/caselabel")
+
+# Square Product Label
+api.add_resource(labels.SquareLabel, "/label/squareproductlabel")
 
 
 if __name__ == "__main__":
