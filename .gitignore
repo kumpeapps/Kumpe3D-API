@@ -386,3 +386,5 @@ pip-selfcheck.json
 .well-known/
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,dotenv,venv,python,node,composer,visualstudiocode
+
+config.ini
