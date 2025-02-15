@@ -5,7 +5,7 @@ import os
 import sys
 import logging
 from dotenv import load_dotenv
-from infisical_api import infisical_api
+from infisical_api import infisical_api # type: ignore
 from loguru import logger
 
 load_dotenv(override=True)
@@ -18,6 +18,7 @@ creds = infisical_api(
     service_token=service_token,
     infisical_url="https://creds.kumpeapps.com",
     workspace_id="65ef13b36b97c857293579af",
+    log_level=log_level,
 )
 
 
