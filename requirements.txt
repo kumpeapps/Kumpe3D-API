@@ -37,4 +37,4 @@ typing_extensions==4.8.0
 tzdata==2023.3
 urllib3==1.26.15
 Werkzeug==3.0.3
-zipp==3.17.0
+zipp==3.19.1
