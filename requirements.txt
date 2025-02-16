@@ -13,7 +13,7 @@ idna==3.7
 importlib-metadata==6.8.0
 infisical==1.6.0
 itsdangerous==2.1.2
-Jinja2==3.1.4
+Jinja2==3.1.5
 load-dotenv==0.1.0
 loguru==0.7.2
 MarkupSafe==2.1.3
